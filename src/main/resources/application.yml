@@ -1,1 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:mysql://desperadoccy.club:3306/SQLI
+    name: SQLI
+    password: sqli
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+server:
+  port: 8080

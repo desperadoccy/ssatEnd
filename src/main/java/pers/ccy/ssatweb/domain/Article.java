@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Article implements Serializable {
     Integer id;
-    String titile;
+    String title;
     String introduction;
     String url;
     Date date;
@@ -26,12 +26,12 @@ public class Article implements Serializable {
         this.id = id;
     }
 
-    public String getTitile() {
-        return titile;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitile(String titile) {
-        this.titile = titile;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getIntroduction() {
@@ -70,7 +70,7 @@ public class Article implements Serializable {
     public String toString() {
         return "Article{" +
                 "id=" + id +
-                ", titile='" + titile + '\'' +
+                ", titile='" + title + '\'' +
                 ", introduction='" + introduction + '\'' +
                 ", url='" + url + '\'' +
                 ", date=" + date +

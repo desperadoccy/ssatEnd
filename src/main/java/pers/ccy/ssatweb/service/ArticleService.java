@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service;
 
+import pers.ccy.ssatweb.common.Status;
 import pers.ccy.ssatweb.domain.Article;
 
 import java.util.List;
@@ -17,21 +18,21 @@ public interface ArticleService {
      * @Description
      * @param [article]
      */
-    void createArticle(Article article);
+    Status createArticle(Article article);
 
     /**
      * @MethodName updateArticle
      * @Description
      * @param [article]
      */
-    void updateArticle(Article article);
+    Status updateArticle(Article article);
 
     /**
      * @MethodName findArticleByName
      * @Description
      * @param [name]
      */
-    Article findArticleByName(String name);
+    Article findArticleByTitle(String title);
 
     /**
      * @MethodName findAll
@@ -39,4 +40,11 @@ public interface ArticleService {
      * @param []
      */
     List<Article> findAll();
+
+    /**
+     * @MethodName findArticleByPage
+     * @Description
+     * @param [size, page]
+     */
+    List<Article> findArticleByPage(int size,int page);
 }

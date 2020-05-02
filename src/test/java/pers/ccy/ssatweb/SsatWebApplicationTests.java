@@ -2,8 +2,8 @@ package pers.ccy.ssatweb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import pers.ccy.ssatweb.articleAndNews.common.Status;
-import pers.ccy.ssatweb.articleAndNews.common.StatusCode;
+import pers.ccy.ssatweb.common.Status;
+import pers.ccy.ssatweb.common.StatusCode;
 
 @SpringBootTest
 class SsatWebApplicationTests {

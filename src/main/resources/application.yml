@@ -6,7 +6,7 @@ spring:
     password: SSAT2020
 
 server:
-  port: 8080
+  port: 8888
 
 mybatis:
   # 搜索指定包别名

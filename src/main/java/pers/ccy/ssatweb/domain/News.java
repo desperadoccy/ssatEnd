@@ -1,4 +1,4 @@
-package pers.ccy.ssatweb.articleAndNews.domain;
+package pers.ccy.ssatweb.domain;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,7 +1,7 @@
-package pers.ccy.ssatweb.articleAndNews.service;
+package pers.ccy.ssatweb.service;
 
-import pers.ccy.ssatweb.articleAndNews.common.Status;
-import pers.ccy.ssatweb.articleAndNews.domain.Article;
+import pers.ccy.ssatweb.common.Status;
+import pers.ccy.ssatweb.domain.Article;
 
 import java.util.List;
 

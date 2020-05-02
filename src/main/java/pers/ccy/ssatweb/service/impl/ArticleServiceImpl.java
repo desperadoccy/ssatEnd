@@ -1,12 +1,12 @@
-package pers.ccy.ssatweb.articleAndNews.service.impl;
+package pers.ccy.ssatweb.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.ccy.ssatweb.articleAndNews.common.Status;
-import pers.ccy.ssatweb.articleAndNews.common.StatusCode;
-import pers.ccy.ssatweb.articleAndNews.dao.ArticleDao;
-import pers.ccy.ssatweb.articleAndNews.domain.Article;
-import pers.ccy.ssatweb.articleAndNews.service.ArticleService;
+import pers.ccy.ssatweb.common.Status;
+import pers.ccy.ssatweb.common.StatusCode;
+import pers.ccy.ssatweb.dao.ArticleDao;
+import pers.ccy.ssatweb.domain.Article;
+import pers.ccy.ssatweb.service.ArticleService;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public List<Article> findAll() {
-        return null;
+        return articleDao.findAll();
     }
 
     /**

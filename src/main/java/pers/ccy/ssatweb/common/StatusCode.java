@@ -1,4 +1,4 @@
-package pers.ccy.ssatweb.articleAndNews.common;
+package pers.ccy.ssatweb.common;
 
 /**
  * @author desperado

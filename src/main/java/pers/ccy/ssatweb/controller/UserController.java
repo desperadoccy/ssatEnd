@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/helloEditor")
-    @PreAuthorize("hasAnyRole('editor', 'admin')")
+    @PreAuthorize("hasAnyRole('editor')")
     public String helloEditor() {
         return "hello,editor";
     }

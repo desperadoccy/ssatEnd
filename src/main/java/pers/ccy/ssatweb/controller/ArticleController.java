@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pers.ccy.ssatweb.common.Status;
+import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.Article;
 import pers.ccy.ssatweb.service.ArticleService;
 
@@ -23,7 +23,7 @@ public class ArticleController {
      * @Description
      */
     @PostMapping("/create")
-    public Status createArticle(Article article) {
+    public RespBean createArticle(Article article) {
         return articleService.createArticle(article);
     }
 
@@ -33,7 +33,7 @@ public class ArticleController {
      * @Description
      */
     @PostMapping("/update")
-    public Status updateArticle(Article article) {
+    public RespBean updateArticle(Article article) {
         return articleService.updateArticle(article);
     }
 

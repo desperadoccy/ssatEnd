@@ -1,6 +1,6 @@
 package pers.ccy.ssatweb.service;
 
-import pers.ccy.ssatweb.common.Status;
+import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.Article;
 
 import java.util.List;
@@ -18,14 +18,14 @@ public interface ArticleService {
      * @MethodName createArticle
      * @Description
      */
-    Status createArticle(Article article);
+    RespBean createArticle(Article article);
 
     /**
      * @param [article]
      * @MethodName updateArticle
      * @Description
      */
-    Status updateArticle(Article article);
+    RespBean updateArticle(Article article);
 
     /**
      * @param [name]

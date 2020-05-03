@@ -7,6 +7,10 @@ spring:
 
 server:
   port: 8888
+  servlet:
+    session:
+      cookie:
+        http-only: false
 
 mybatis:
   # 搜索指定包别名
@@ -15,4 +19,3 @@ mybatis:
   mapperLocations: classpath*:mybatis/**/*Mapper.xml
   # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
-

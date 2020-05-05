@@ -1,6 +1,7 @@
 package pers.ccy.ssatweb.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.UserInfo;
 
 /**
@@ -18,4 +19,6 @@ public interface UserService {
      * @param [name]
      */
     public UserInfo findUserByUsername(String name);
+
+    public RespBean addUser(UserInfo userInfo);
 }

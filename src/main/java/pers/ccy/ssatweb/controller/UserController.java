@@ -1,9 +1,13 @@
 package pers.ccy.ssatweb.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pers.ccy.ssatweb.common.RespBean;
+import pers.ccy.ssatweb.domain.UserInfo;
+import pers.ccy.ssatweb.service.UserService;
 
 /**
  * @author desperado
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    UserService userService;
 
     @GetMapping("/helloAdmin")
     @PreAuthorize("hasAnyRole('admin')")
@@ -26,5 +32,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('editor')")
     public String helloEditor() {
         return "hello,editor";
+    }
+
+    @RequestMapping("/addUser")
+    public RespBean addUser(UserInfo userInfo) {
+        return userService.addUser(userInfo);
     }
 }

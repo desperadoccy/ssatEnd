@@ -1,4 +1,4 @@
-package pers.ccy.ssatweb.config;
+package pers.ccy.ssatweb.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pers.ccy.ssatweb.dao.UserDao;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
 
@@ -44,7 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_"+userInfo.getRole().name()));
-        User user = new User(userInfo.getUsername(),passwordEncoder.encode(userInfo.getPassword()),authorities);
+        User user = new User(userInfo.getUsername(),userInfo.getPassword(),authorities);
         return user;
     }
 }

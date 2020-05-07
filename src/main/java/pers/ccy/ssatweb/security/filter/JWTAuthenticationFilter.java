@@ -53,14 +53,10 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader("token");
 
         //判断是否有token
-        if (token == null || !token.startsWith("SSAT-")) {
-            chain.doFilter(request, response);
-            throw new BadCredentialsException("该账号无权限");
+        if (token != null && token.startsWith("SSAT-")) {
+            UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-
-        UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(token);
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         //放行
         chain.doFilter(request, response);

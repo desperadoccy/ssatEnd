@@ -67,15 +67,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
+        http.cors().and().csrf().disable()
                 // 所有请求需要身份认证
-                .anyRequest().permitAll()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //验证登陆
-                .addFilter(new JWTLoginFilter(authenticationManager()))
-                //验证token
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()));
-//        http
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll();
+                http.addFilterBefore(new JWTLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+                http.addFilterAt(new JWTAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+                // http
 //                .csrf().disable()
 //                //认证失败处理类
 //                .exceptionHandling()

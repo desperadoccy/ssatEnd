@@ -11,12 +11,12 @@ import java.util.Date;
  * @Version 1.0
  */
 public class Article implements Serializable {
-    Integer id;
-    String title;
-    String introduction;
-    String url;
-    Date date;
-    String author;
+    private Integer id;
+    private String title;
+    private String introduction;
+    private String url;
+    private Date date;
+    private String author;
 
     public Integer getId() {
         return id;

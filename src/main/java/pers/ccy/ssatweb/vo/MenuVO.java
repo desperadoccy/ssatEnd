@@ -18,7 +18,16 @@ public class MenuVO {
     private Integer pid;
     private String name;
     private String icon;
+    private String path;
     private List<MenuVO> children;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public Integer getId() {
         return id;
@@ -60,12 +69,11 @@ public class MenuVO {
         this.children = children;
     }
 
-    public static List<MenuVO> parseBy(List<Menu> list)
-    {
-        return ExtractUtil.transferToList(list,MenuVO::parseBy);
+    public static List<MenuVO> parseBy(List<Menu> list) {
+        return ExtractUtil.transferToList(list, MenuVO::parseBy);
     }
 
-    public static MenuVO parseBy(Menu menu){
-        return ModelMapperUtil.map(menu,MenuVO.class);
+    public static MenuVO parseBy(Menu menu) {
+        return ModelMapperUtil.map(menu, MenuVO.class);
     }
 }

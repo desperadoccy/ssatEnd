@@ -2,6 +2,7 @@ package pers.ccy.ssatweb.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.dao.MenuDao;
 import pers.ccy.ssatweb.domain.Menu;
 import pers.ccy.ssatweb.service.MenuService;
@@ -24,9 +25,14 @@ public class MenuServiceImpl implements MenuService {
     MenuDao menuDao;
 
     @Override
-    public List<MenuVO> findAllMenu() {
-        List<Menu> list = menuDao.findAll();
-        List<MenuVO> menuVOS = MenuVO.parseBy(list);
-        return TreeUtil.toTree(menuVOS);
+    public RespBean findAllMenu() {
+        try {
+            List<Menu> list = menuDao.findAll();
+            List<MenuVO> menuVOS = MenuVO.parseBy(list);
+            List<MenuVO> menuVOList = TreeUtil.toTree(menuVOS);
+            return RespBean.ok("查询成功",menuVOList);
+        }catch (Exception e){
+            return RespBean.error("查询失败");
+        }
     }
 }

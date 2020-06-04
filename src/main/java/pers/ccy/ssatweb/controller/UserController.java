@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
+import pers.ccy.ssatweb.vo.UsersVO;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author desperado
@@ -38,5 +42,15 @@ public class UserController {
     @PostMapping("/addUser")
     public RespBean addUser(UserInfo userInfo) {
         return userService.addUser(userInfo);
+    }
+
+    @GetMapping("/findAll")
+    public RespBean findAll(int pageNum, int pageSize) {
+        return userService.findAll(pageNum, pageSize);
+    }
+
+    @PostMapping("/update/status")
+    public RespBean updateStatus(int userId, int status) {
+        return userService.updateStatus(userId,status);
     }
 }

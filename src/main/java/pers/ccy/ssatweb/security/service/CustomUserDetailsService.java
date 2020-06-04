@@ -35,13 +35,14 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //System.out.println(username);
         UserInfo userInfo = userService.findUserByUsername(username);
         if (userInfo == null){
             throw new UsernameNotFoundException("not found");
         }
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        Integer id = userInfo.getId();
+        authorities.add(new SimpleGrantedAuthority(id.toString()));
         authorities.add(new SimpleGrantedAuthority("ROLE_"+userInfo.getRole().name()));
         User user = new User(userInfo.getUsername(),userInfo.getPassword(),authorities);
         return user;

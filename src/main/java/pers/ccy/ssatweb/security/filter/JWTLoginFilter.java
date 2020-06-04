@@ -3,14 +3,24 @@ package pers.ccy.ssatweb.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.*;
+import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pers.ccy.ssatweb.common.RespBean;
+import pers.ccy.ssatweb.dao.UserDao;
+import pers.ccy.ssatweb.domain.UserInfo;
+import pers.ccy.ssatweb.service.UserService;
+import pers.ccy.ssatweb.service.impl.UserServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,10 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author desperado
@@ -31,12 +38,20 @@ import java.util.Map;
  * @date 2020/5/5 0:40
  * @Version 1.0
  */
+@Component
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     private ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<>();
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     public JWTLoginFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 
     @Override
@@ -132,10 +147,13 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
-        System.out.println();
+        Iterator<? extends GrantedAuthority> iterator = authResult.getAuthorities().iterator();
+        String id = iterator.next().toString();
+        String role = iterator.next().toString();
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-                .claim("role", authResult.getAuthorities().iterator().next().getAuthority().toString())
+                .claim("id", id)
+                .claim("role", role)
                 //有效期两小时
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2 * 1000))
                 //采用什么算法是可以自己选择的，不一定非要采用HS512
@@ -146,8 +164,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("username",authResult.getPrincipal());
-        map.put("role",authResult.getAuthorities().iterator().next().getAuthority());
+        map.put("id", id);
+        map.put("username", authResult.getName());
+        map.put("role", role);
         map.put("token", "SSAT-" + token);
         RespBean ok = RespBean.ok("登录成功", map);
         out.write(new ObjectMapper().writeValueAsString(ok));

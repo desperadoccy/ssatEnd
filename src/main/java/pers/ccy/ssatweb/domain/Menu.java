@@ -14,6 +14,15 @@ public class Menu implements Serializable {
     private Integer pid;
     private String name;
     private String icon;
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public Integer getId() {
         return id;

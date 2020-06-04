@@ -26,11 +26,6 @@ public class MenuController {
 
     @GetMapping("/all")
     public RespBean findAllMenu() {
-        try {
-            List<MenuVO> allMenu = menuService.findAllMenu();
-            return RespBean.ok("查询成功", allMenu);
-        } catch (Exception e) {
-            return RespBean.error("查询失败");
-        }
+        return menuService.findAllMenu();
     }
 }

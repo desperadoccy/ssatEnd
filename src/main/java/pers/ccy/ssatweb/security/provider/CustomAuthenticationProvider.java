@@ -5,13 +5,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 /**
  * @author desperado
@@ -69,16 +65,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         //判断密码(这里是md5加密方式)是否正确
         String dbPassword = userDetails.getPassword();
-//        String encoderPassword = DigestUtils.md5DigestAsHex(password.getBytes());
 
         if (!passwordEncoder.matches(password, dbPassword)) {
             throw new BadCredentialsException("密码错误");
         }
 
-        // 还可以从数据库中查出该用户所拥有的权限,设置到 authorities 中去,这里模拟数据库查询.
-        //ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        //authorities.add(new SimpleGrantedAuthority("admin"));
-        //ArrayList<GrantedAuthority> authorities = (ArrayList<GrantedAuthority>) userDetails.getAuthorities();
         Authentication auth = new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
 
         return auth;

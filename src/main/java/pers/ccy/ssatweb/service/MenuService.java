@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service;
 
+import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.vo.MenuVO;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface MenuService {
      * @Description
      * @param []
      */
-    public List<MenuVO> findAllMenu();
+    public RespBean findAllMenu();
 }

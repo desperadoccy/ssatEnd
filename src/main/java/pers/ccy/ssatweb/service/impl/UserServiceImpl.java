@@ -49,10 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RespBean findAll(int num, int size) {
+    public RespBean findUser(int num, int size, String query) {
         try {
-            List<UserInfo> infos = userDao.findAll((num - 1) * size, size);
-            int countAll = userDao.countAll();
+            List<UserInfo> infos = userDao.findUser((num - 1) * size, size, query);
+            int countAll = userDao.countAll(query);
             List<UserVO> userVOS = UserVO.parseBy(infos);
             UsersVO usersVO = new UsersVO();
             usersVO.setUsers(userVOS);
@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
             return RespBean.error("该用户为超级管理员，无法改变状态");
         }
         LoginUser loginUser = userLoginService.getLoginUser();
-        System.out.println(loginUser);
         if (loginUser.getId() == userId)
             return RespBean.error("不能改变自己的状态");
         try {

@@ -24,7 +24,7 @@ public interface UserService {
 
     public RespBean addUser(UserInfo userInfo);
 
-    public RespBean findAll(int num, int size);
+    public RespBean findUser(int num, int size, String query);
 
     public RespBean updateStatus(int userId, int status);
 }

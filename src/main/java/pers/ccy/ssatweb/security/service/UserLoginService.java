@@ -22,7 +22,6 @@ public class UserLoginService {
      * @return 用户数据
      */
     public LoginUser getLoginUser() {
-        System.out.println(ServletUtil.getRequest().getHeader("token"));
         return getLoginUser(ServletUtil.getRequest());
     }
 

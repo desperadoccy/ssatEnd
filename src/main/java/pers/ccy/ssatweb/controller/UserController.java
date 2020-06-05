@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
+import pers.ccy.ssatweb.utils.ServletUtil;
 import pers.ccy.ssatweb.vo.UsersVO;
 
 import javax.annotation.Resource;
@@ -44,9 +45,12 @@ public class UserController {
         return userService.addUser(userInfo);
     }
 
-    @GetMapping("/findAll")
-    public RespBean findAll(int pageNum, int pageSize) {
-        return userService.findAll(pageNum, pageSize);
+    @GetMapping("/findUser")
+    public RespBean findUser(int pageNum, int pageSize, String query) {
+        String queryLike = null;
+        if (query != null)
+            queryLike = "%" + query + "%";
+        return userService.findUser(pageNum, pageSize, queryLike);
     }
 
     @PostMapping("/update/status")

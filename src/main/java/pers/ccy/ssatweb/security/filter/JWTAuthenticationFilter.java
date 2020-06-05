@@ -1,6 +1,8 @@
 package pers.ccy.ssatweb.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,12 +12,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import pers.ccy.ssatweb.common.RespBean;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -44,25 +48,43 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
      */
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws AuthenticationException, IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         String token = request.getHeader("token");
 
         //判断是否有token
         if (token != null && token.startsWith("SSAT-")) {
-            UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            try {
+                UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                //放行
+                chain.doFilter(request, response);
+            } catch (ExpiredJwtException | AccountExpiredException e) {
+                response.setContentType("application/json;charset=utf-8");
+                PrintWriter out = null;
+                out = response.getWriter();
+                out.write(new ObjectMapper().writeValueAsString(RespBean.error("该账号已过期,请重新登陆")));
+                out.flush();
+                out.close();
+            } catch (BadCredentialsException e) {
+                response.setContentType("application/json;charset=utf-8");
+                PrintWriter out = response.getWriter();
+                out.write(new ObjectMapper().writeValueAsString(RespBean.error("该账号无权限")));
+                out.flush();
+                out.close();
+            }
+        } else {
+            //放行
+            chain.doFilter(request, response);
         }
 
-        //放行
-        chain.doFilter(request, response);
 
     }
 
     /**
      * 解析token中的信息,并判断是否过期
      */
-    private UsernamePasswordAuthenticationToken getAuthentication(String token) throws AuthenticationException{
+    private UsernamePasswordAuthenticationToken getAuthentication(String token) throws AuthenticationException {
 
 
         Claims claims = Jwts.parser().setSigningKey("SSAT2020")
@@ -80,7 +102,6 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         Date now = new Date();
 
         if (now.getTime() > expiration.getTime()) {
-
             throw new AccountExpiredException("该账号已过期,请重新登陆");
         }
 
@@ -91,5 +112,6 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
             return new UsernamePasswordAuthenticationToken(username, null, authorities);
         }
         throw new BadCredentialsException("该账号无权限");
+        //return new UsernamePasswordAuthenticationToken("", null, null);
     }
 }

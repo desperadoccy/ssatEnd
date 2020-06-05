@@ -23,11 +23,24 @@ public interface UserDao {
     @Insert("insert into user (username, nickname, password, role, active) values (#{username}, #{nickname}, #{password}, #{role}, 1)")
     void addUser(UserInfo userInfo);
 
-    @Select("select id, username, nickname, role, active from user limit #{num}, #{size}")
-    List<UserInfo> findAll(int num, int size);
+    @Select("<script>" +
+            "select " +
+            "id, username, nickname, role, active " +
+            "from user " +
+            "<if test = 'query != null'> " +
+            "where username like #{query} " +
+            "</if> " +
+            "limit #{num}, #{size} " +
+            "</script>")
+    List<UserInfo> findUser(int num, int size, String query);
 
-    @Select("select count(*) from user")
-    int countAll();
+    @Select("<script>" +
+            "select count(*) from user" +
+            "<if test = 'query != null'> " +
+            "where username like #{query} " +
+            "</if> " +
+            "</script>")
+    int countAll(String query);
 
     @Select("select * from user_whitelist where userId = #{userId}")
     UserInfo findUserInWhiteList(int userId);

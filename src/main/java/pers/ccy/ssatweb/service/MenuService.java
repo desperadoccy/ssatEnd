@@ -1,9 +1,6 @@
 package pers.ccy.ssatweb.service;
 
 import pers.ccy.ssatweb.common.RespBean;
-import pers.ccy.ssatweb.vo.MenuVO;
-
-import java.util.List;
 
 /**
  * @author desperado

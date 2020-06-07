@@ -13,13 +13,10 @@ import java.util.List;
  * @date 2020/5/21 10:48
  * @Version 1.0
  */
-public class MenuVO {
-    private Integer id;
-    private Integer pid;
+public class MenuVO extends TreeVO{
     private String name;
     private String icon;
     private String path;
-    private List<MenuVO> children;
 
     public String getPath() {
         return path;
@@ -27,18 +24,6 @@ public class MenuVO {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPid() {
-        return pid;
     }
 
     public void setPid(Integer pid) {
@@ -59,14 +44,6 @@ public class MenuVO {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public List<MenuVO> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<MenuVO> children) {
-        this.children = children;
     }
 
     public static List<MenuVO> parseBy(List<Menu> list) {

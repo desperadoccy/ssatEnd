@@ -33,6 +33,7 @@ public class UserLoginService {
     public LoginUser getLoginUser(HttpServletRequest request) {
         try {
             String token = getToken(request);
+            if (token == null) return null;
             Claims claims = Jwts.parser().setSigningKey("SSAT2020")
                     .parseClaimsJws(token)
                     .getBody();
@@ -53,6 +54,7 @@ public class UserLoginService {
 
     public String getToken(HttpServletRequest request) {
         String token = request.getHeader("token");
+        if (token == null) return null;
         if (!token.isEmpty() && token.startsWith("SSAT-")) {
             token = token.replace("SSAT-", "");
         }

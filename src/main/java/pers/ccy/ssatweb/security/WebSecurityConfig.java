@@ -18,12 +18,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.security.filter.JWTAuthenticationFilter;
 import pers.ccy.ssatweb.security.filter.JWTLoginFilter;
+import pers.ccy.ssatweb.security.handler.AuthenticationAccessDeniedHandler;
 import pers.ccy.ssatweb.security.provider.CustomAuthenticationProvider;
 import pers.ccy.ssatweb.security.service.CustomUserDetailsService;
 
@@ -76,12 +78,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
         http.addFilterBefore(new JWTLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(new JWTAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }
 
     @Bean("authenticationManagerBean")
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public AccessDeniedHandler getAccessDeniedHandler() {
+        return new AuthenticationAccessDeniedHandler();
     }
 
 }

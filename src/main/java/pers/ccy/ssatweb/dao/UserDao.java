@@ -1,9 +1,6 @@
 package pers.ccy.ssatweb.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import pers.ccy.ssatweb.domain.UserInfo;
 
 import java.util.List;
@@ -47,4 +44,13 @@ public interface UserDao {
 
     @Update("UPDATE `user` SET active = #{status} WHERE id = #{userId}")
     void updateUserStatus(int userId, int status);
+
+    @Select("select * from user where id = #{id}")
+    UserInfo findUserById(int id);
+
+    @Update("UPDATE `user` SET nickname = #{nickname} WHERE id = #{id}")
+    void updateUser(UserInfo userInfo);
+
+    @Delete("delete from user where id = #{id}")
+    void deleteUser(int id);
 }

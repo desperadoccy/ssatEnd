@@ -2,10 +2,7 @@ package pers.ccy.ssatweb.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
@@ -13,6 +10,7 @@ import pers.ccy.ssatweb.utils.ServletUtil;
 import pers.ccy.ssatweb.vo.UsersVO;
 
 import javax.annotation.Resource;
+import javax.ws.rs.Path;
 import java.util.List;
 
 /**
@@ -40,12 +38,12 @@ public class UserController {
         return "hello,editor";
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/add")
     public RespBean addUser(UserInfo userInfo) {
         return userService.addUser(userInfo);
     }
 
-    @GetMapping("/findUser")
+    @GetMapping("/find")
     public RespBean findUser(int pageNum, int pageSize, String query) {
         String queryLike = null;
         if (query != null)
@@ -55,6 +53,21 @@ public class UserController {
 
     @PostMapping("/update/status")
     public RespBean updateStatus(int userId, int status) {
-        return userService.updateStatus(userId,status);
+        return userService.updateStatus(userId, status);
+    }
+
+    @GetMapping("/{id}")
+    public RespBean findUserById(@PathVariable("id") int id) {
+        return userService.findUserById(id);
+    }
+
+    @PostMapping("/update")
+    public RespBean updateUser(UserInfo userInfo) {
+        return userService.updateUser(userInfo);
+    }
+
+    @GetMapping("/delete/{id}")
+    public RespBean deleteUserById(@PathVariable("id") int id) {
+        return userService.deleteUser(id);
     }
 }

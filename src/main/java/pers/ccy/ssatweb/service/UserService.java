@@ -16,9 +16,9 @@ import java.util.List;
 public interface UserService {
 
     /**
+     * @param [name]
      * @MethodName loadUserByUsername
      * @Description
-     * @param [name]
      */
     public UserInfo findUserByUsername(String name);
 
@@ -27,4 +27,10 @@ public interface UserService {
     public RespBean findUser(int num, int size, String query);
 
     public RespBean updateStatus(int userId, int status);
+
+    public RespBean findUserById(int id);
+
+    public RespBean updateUser(UserInfo userInfo);
+
+    public RespBean deleteUser(int id);
 }

@@ -79,4 +79,44 @@ public class UserServiceImpl implements UserService {
             return RespBean.error("更新失败");
         }
     }
+
+    @Override
+    public RespBean findUserById(int id) {
+        try {
+            UserInfo user = userDao.findUserById(id);
+            UserVO userVO = UserVO.parseBy(user);
+            return RespBean.ok("查询成功", userVO);
+        } catch (Exception e) {
+            return RespBean.error("查询失败");
+        }
+    }
+
+    @Override
+    public RespBean updateUser(UserInfo userInfo) {
+        try {
+            userDao.updateUser(userInfo);
+            return RespBean.ok("更新成功");
+        } catch (Exception e) {
+            return RespBean.error("更新失败");
+        }
+    }
+
+    @Override
+    public RespBean deleteUser(int id) {
+        //设置不可更改白名单
+        if (userDao.findUserInWhiteList(id) != null) {
+            return RespBean.error("该用户为超级管理员，无法删除");
+        }
+        LoginUser loginUser = userLoginService.getLoginUser();
+        if (loginUser.getId() == id)
+            return RespBean.error("不能删除自己");
+        try {
+            userDao.deleteUser(id);
+            return RespBean.ok("删除成功");
+        } catch (Exception e) {
+            return RespBean.error("删除失败");
+        }
+    }
+
+
 }

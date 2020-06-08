@@ -112,6 +112,5 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
             return new UsernamePasswordAuthenticationToken(username, null, authorities);
         }
         throw new BadCredentialsException("该账号无权限");
-        //return new UsernamePasswordAuthenticationToken("", null, null);
     }
 }

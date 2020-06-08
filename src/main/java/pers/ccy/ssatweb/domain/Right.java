@@ -15,6 +15,15 @@ public class Right implements Serializable {
     private String path;
     private Integer level;
     private Integer pid;
+    private String descritpion;
+
+    public String getDescritpion() {
+        return descritpion;
+    }
+
+    public void setDescritpion(String descritpion) {
+        this.descritpion = descritpion;
+    }
 
     public Integer getId() {
         return id;

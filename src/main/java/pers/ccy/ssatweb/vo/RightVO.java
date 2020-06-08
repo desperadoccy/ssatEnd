@@ -17,6 +17,15 @@ public class RightVO extends TreeVO{
     private String name;
     private String path;
     private Integer level;
+    private String descritpion;
+
+    public String getDescritpion() {
+        return descritpion;
+    }
+
+    public void setDescritpion(String descritpion) {
+        this.descritpion = descritpion;
+    }
 
     public String getName() {
         return name;

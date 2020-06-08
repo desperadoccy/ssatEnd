@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.service.MenuService;
-import pers.ccy.ssatweb.vo.MenuVO;
-
-import java.util.List;
 
 /**
  * @author desperado

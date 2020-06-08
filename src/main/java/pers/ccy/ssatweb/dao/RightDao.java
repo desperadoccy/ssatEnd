@@ -17,4 +17,11 @@ import java.util.List;
 public interface RightDao {
     @Select("select * from rights")
     List<Right> list();
+
+    @Select("select rights.* from user u " +
+            "left join role_user rs on u.id = rs.userId " +
+            "left join role r on rs.roleId = r.id " +
+            "left join right_role rr on rr.roleId = r.id " +
+            "left join rights on rights.id = rr.rightId where u.id = 1;")
+    List<Right> findByAdminUserId(int userId);
 }

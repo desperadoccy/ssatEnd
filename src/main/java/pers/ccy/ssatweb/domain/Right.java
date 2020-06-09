@@ -12,7 +12,8 @@ import java.io.Serializable;
 public class Right implements Serializable {
     private Integer id;
     private String name;
-    private String path;
+    private String frontpath;
+    private String endpath;
     private Integer level;
     private Integer pid;
     private String descritpion;
@@ -41,14 +42,6 @@ public class Right implements Serializable {
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public Integer getLevel() {
         return level;
     }
@@ -63,5 +56,21 @@ public class Right implements Serializable {
 
     public void setPid(Integer pid) {
         this.pid = pid;
+    }
+
+    public String getFrontpath() {
+        return frontpath;
+    }
+
+    public void setFrontpath(String frontpath) {
+        this.frontpath = frontpath;
+    }
+
+    public String getEndpath() {
+        return endpath;
+    }
+
+    public void setEndpath(String endpath) {
+        this.endpath = endpath;
     }
 }

@@ -6,12 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
-import pers.ccy.ssatweb.utils.ServletUtil;
-import pers.ccy.ssatweb.vo.UsersVO;
-
-import javax.annotation.Resource;
-import javax.ws.rs.Path;
-import java.util.List;
 
 /**
  * @author desperado

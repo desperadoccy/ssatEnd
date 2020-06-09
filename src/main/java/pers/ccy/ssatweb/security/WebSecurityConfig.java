@@ -19,12 +19,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.security.filter.JWTAuthenticationFilter;
 import pers.ccy.ssatweb.security.filter.JWTLoginFilter;
+import pers.ccy.ssatweb.security.filter.MyFilterSecurityInterceptor;
 import pers.ccy.ssatweb.security.handler.AuthenticationAccessDeniedHandler;
 import pers.ccy.ssatweb.security.provider.CustomAuthenticationProvider;
 import pers.ccy.ssatweb.security.service.CustomUserDetailsService;
@@ -55,12 +57,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Bean
-    RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_admin > ROLE_editor");
-        return roleHierarchy;
-    }
+    @Autowired
+    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
+
+//    @Bean
+//    RoleHierarchy roleHierarchy() {
+//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//        roleHierarchy.setHierarchy("ROLE_admin > ROLE_editor");
+//        return roleHierarchy;
+//    }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -76,8 +81,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll();
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+//                .and()
+//                .formLogin()
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .permitAll()
+//                .and()
+//                .authorizeRequests()
+//                .anyRequest().authenticated();
         http.addFilterBefore(new JWTLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(new JWTAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }
 

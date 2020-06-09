@@ -15,9 +15,10 @@ import java.util.List;
  */
 public class RightVO extends TreeVO{
     private String name;
-    private String path;
     private Integer level;
     private String descritpion;
+    private String frontpath;
+    private String endpath;
 
     public String getDescritpion() {
         return descritpion;
@@ -35,14 +36,6 @@ public class RightVO extends TreeVO{
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public Integer getLevel() {
         return level;
     }
@@ -57,5 +50,21 @@ public class RightVO extends TreeVO{
 
     public static RightVO parseBy(Right right) {
         return ModelMapperUtil.map(right, RightVO.class);
+    }
+
+    public String getFrontpath() {
+        return frontpath;
+    }
+
+    public void setFrontpath(String frontpath) {
+        this.frontpath = frontpath;
+    }
+
+    public String getEndpath() {
+        return endpath;
+    }
+
+    public void setEndpath(String endpath) {
+        this.endpath = endpath;
     }
 }

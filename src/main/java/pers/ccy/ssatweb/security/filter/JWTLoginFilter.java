@@ -141,11 +141,11 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain, Authentication authResult) throws IOException {
         Iterator<? extends GrantedAuthority> iterator = authResult.getAuthorities().iterator();
         String id = iterator.next().toString();
-        String role = iterator.next().toString();
+//        String role = iterator.next().toString();
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("id", id)
-                .claim("role", role)
+//                .claim("role", role)
                 //有效期两小时
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 2 * 1000))
                 //采用什么算法是可以自己选择的，不一定非要采用HS512
@@ -158,7 +158,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         HashMap<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("username", authResult.getName());
-        map.put("role", role);
+ //       map.put("role", role);
         map.put("token", "SSAT-" + token);
         RespBean ok = RespBean.ok("登录成功", map);
         out.write(new ObjectMapper().writeValueAsString(ok));

@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import pers.ccy.ssatweb.dao.RightDao;
+import pers.ccy.ssatweb.domain.Right;
 import pers.ccy.ssatweb.domain.UserInfo;
 import pers.ccy.ssatweb.service.UserService;
 
@@ -27,24 +29,33 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
     @Autowired
+    private RightDao rightDao;
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
     /**
+     * @param [s]
      * @MethodName loadUserByUsername
      * @Description
-     * @param [s]
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserInfo userInfo = userService.findUserByUsername(username);
-        if (userInfo == null){
-            throw new UsernameNotFoundException("not found");
+        if (userInfo == null) {
+            throw new UsernameNotFoundException("无此用户");
         }
-
+        List<Right> rightList = rightDao.findByAdminUserId(userInfo.getId());
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         Integer id = userInfo.getId();
         authorities.add(new SimpleGrantedAuthority(id.toString()));
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+userInfo.getRole().name()));
-        User user = new User(userInfo.getUsername(),userInfo.getPassword(),authorities);
+        for (Right right : rightList) {
+            if (right != null && right.getName() != null) {
+                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(right.getName());
+                authorities.add(grantedAuthority);
+            }
+        }
+//        authorities.add(new SimpleGrantedAuthority("ROLE_" + userInfo.getRole().name()));
+        User user = new User(userInfo.getUsername(), userInfo.getPassword(), authorities);
         return user;
     }
 }

@@ -11,34 +11,40 @@ public class RespBean {
     private Integer status;
     private String msg;
     private Object obj;
+    private String jwtToken;
 
     public static RespBean build() {
         return new RespBean();
     }
 
     public static RespBean ok(String msg) {
-        return new RespBean(200, msg, null);
+        return new RespBean(200, msg, null, null);
     }
 
     public static RespBean ok(String msg, Object obj) {
-        return new RespBean(200, msg, obj);
+        return new RespBean(200, msg, obj, null);
     }
 
     public static RespBean error(String msg) {
-        return new RespBean(500, msg, null);
+        return new RespBean(500, msg, null, null);
     }
 
     public static RespBean error(String msg, Object obj) {
-        return new RespBean(500, msg, obj);
+        return new RespBean(500, msg, obj, null);
+    }
+
+    public static RespBean custom(Integer status, String msg) {
+        return new RespBean(status, msg, null, null);
     }
 
     private RespBean() {
     }
 
-    private RespBean(Integer status, String msg, Object obj) {
+    private RespBean(Integer status, String msg, Object obj, String jwtToken) {
         this.status = status;
         this.msg = msg;
         this.obj = obj;
+        this.jwtToken = jwtToken;
     }
 
     public Integer getStatus() {
@@ -66,5 +72,9 @@ public class RespBean {
     public RespBean setObj(Object obj) {
         this.obj = obj;
         return this;
+    }
+
+    public void setJwtToken(String jwtToken) {
+        this.jwtToken = jwtToken;
     }
 }

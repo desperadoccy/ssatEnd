@@ -1,44 +1,15 @@
 package pers.ccy.ssatweb.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pers.ccy.ssatweb.common.RespBean;
-import pers.ccy.ssatweb.security.filter.JWTAuthenticationFilter;
-import pers.ccy.ssatweb.security.filter.JWTLoginFilter;
-import pers.ccy.ssatweb.security.filter.MyFilterSecurityInterceptor;
-import pers.ccy.ssatweb.security.handler.AuthenticationAccessDeniedHandler;
-import pers.ccy.ssatweb.security.provider.CustomAuthenticationProvider;
-import pers.ccy.ssatweb.security.service.CustomUserDetailsService;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 /**
  * @author desperado
@@ -52,60 +23,77 @@ import java.util.*;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    AjaxAuthenticationEntryPoint authenticationEntryPoint;  //  未登陆时返回 JSON 格式的数据给前端
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    AjaxAuthenticationSuccessHandler authenticationSuccessHandler;  // 登录成功返回的 JSON 格式数据给前端
 
     @Autowired
-    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
+    AjaxAuthenticationFailureHandler authenticationFailureHandler;  //  登录失败返回的 JSON 格式数据给前端
 
-//    @Bean
-//    RoleHierarchy roleHierarchy() {
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        roleHierarchy.setHierarchy("ROLE_admin > ROLE_editor");
-//        return roleHierarchy;
-//    }
+    @Autowired
+    AjaxLogoutSuccessHandler logoutSuccessHandler;  // 注销成功返回的 JSON 格式数据给前端
+
+    @Autowired
+    AjaxAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的 JSON 格式数据给前端
+
+    @Autowired
+    SelfUserDetailsService userDetailsService; // 自定义user
+
+    @Autowired
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
+
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new CustomAuthenticationProvider(userDetailsService, passwordEncoder));
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 加入自定义的安全认证
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                // 所有请求需要身份认证
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭session
                 .and()
+                //  未登陆时返回 JSON
+                .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                // 所有请求必须认证
                 .authorizeRequests()
                 .anyRequest()
+                // 认证的逻辑
+                .access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
+                .and()
+                //开启登录
+                .formLogin()
+                .loginPage("/")
+                .successHandler(authenticationSuccessHandler) // 登录成功
+                .failureHandler(authenticationFailureHandler) // 登录失败
+                .permitAll()
+                .and()
+                // 登出
+                .logout()
+                .logoutSuccessHandler(logoutSuccessHandler)
                 .permitAll();
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-//                .and()
-//                .formLogin()
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll()
-//                .and()
-//                .authorizeRequests()
-//                .anyRequest().authenticated();
-        http.addFilterBefore(new JWTLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new JWTAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        //http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
-        http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
+        http.rememberMe().rememberMeParameter("remember-me")
+                .userDetailsService(userDetailsService).tokenValiditySeconds(300);
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
+        //用重写的Filter替换掉原有的UsernamePasswordAuthenticationFilter实现使用json 数据也可以登陆
+        http.addFilterAt(customAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class);
+        // 设置执行其他工作前的 filter （最重要的验证 JWT）
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT Filter
+
     }
 
-    @Bean("authenticationManagerBean")
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
+    //注册自定义的UsernamePasswordAuthenticationFilter
     @Bean
-    public AccessDeniedHandler getAccessDeniedHandler() {
-        return new AuthenticationAccessDeniedHandler();
+    CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        filter.setFilterProcessesUrl("/login"); // 设置登陆接口名
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
     }
-
 }

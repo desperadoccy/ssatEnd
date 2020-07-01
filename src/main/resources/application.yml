@@ -20,3 +20,9 @@ mybatis:
   # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
 
+swagger:
+  base-path: /**
+  base-package: 'pers.ccy'
+  title: ssat-web-swagger
+  description: 'swagger接口文档'
+  version: '1.0'

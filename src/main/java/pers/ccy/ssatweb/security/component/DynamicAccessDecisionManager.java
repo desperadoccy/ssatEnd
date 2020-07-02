@@ -1,4 +1,4 @@
-package pers.ccy.security.component;
+package pers.ccy.ssatweb.security.component;
 
 import cn.hutool.core.collection.CollUtil;
 import org.springframework.security.access.AccessDecisionManager;

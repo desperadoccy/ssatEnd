@@ -1,4 +1,4 @@
-package pers.ccy.security.common;
+package pers.ccy.ssatweb.security.common;
 
 /**
  * 枚举了一些常用API操作码

@@ -1,7 +1,12 @@
 package pers.ccy.ssatweb.domain;
 
+import pers.ccy.ssatweb.dto.SsatAdminDTO;
+import pers.ccy.ssatweb.utils.ExtractUtil;
+import pers.ccy.ssatweb.utils.ModelMapperUtil;
+
 import java.util.Date;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (SsatAdmin)实体类
@@ -131,4 +136,11 @@ public class SsatAdmin implements Serializable {
         this.status = status;
     }
 
+    public static List<SsatAdmin> parseBy(List<SsatAdminDTO> list) {
+        return ExtractUtil.transferToList(list, SsatAdmin::parseBy);
+    }
+
+    public static SsatAdmin parseBy(SsatAdminDTO ssatAdminDTO) {
+        return ModelMapperUtil.map(ssatAdminDTO, SsatAdmin.class);
+    }
 }

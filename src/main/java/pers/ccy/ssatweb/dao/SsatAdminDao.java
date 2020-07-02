@@ -71,4 +71,11 @@ public interface SsatAdminDao {
      * @return 查询的数据
      */
     SsatAdmin getAdminByUsername(String username);
+
+    /**
+     * 模糊查询
+     * @param username
+     * @return
+     */
+    List<SsatAdmin> selectAdmin(String username);
 }

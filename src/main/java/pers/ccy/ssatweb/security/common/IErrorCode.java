@@ -1,4 +1,4 @@
-package pers.ccy.security.common;
+package pers.ccy.ssatweb.security.common;
 
 /**
  * 封装API的错误码

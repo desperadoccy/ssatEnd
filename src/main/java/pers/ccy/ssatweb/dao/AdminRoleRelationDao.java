@@ -3,6 +3,8 @@ package pers.ccy.ssatweb.dao;
 import org.apache.ibatis.annotations.Mapper;
 import pers.ccy.ssatweb.domain.AdminRoleRelation;
 import org.apache.ibatis.annotations.Param;
+import pers.ccy.ssatweb.domain.SsatResource;
+
 import java.util.List;
 
 /**
@@ -64,4 +66,19 @@ public interface AdminRoleRelationDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 通过adminId删除数据
+     *
+     * @param adminId
+     * @return 影响行数
+     */
+    int deleteByAdminId(Long adminId);
+
+    /**
+     * 通过adminId查询数据
+     *
+     * @param adminId
+     * @return 影响行数
+     */
+    List<SsatResource> getResourceList(Long adminId);
 }

@@ -1,4 +1,4 @@
-package pers.ccy.security.component;
+package pers.ccy.ssatweb.security.component;
 
 import cn.hutool.core.util.URLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,7 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import pers.ccy.security.service.DynamicSecurityService;
+import pers.ccy.ssatweb.security.service.DynamicSecurityService;
 
 import javax.annotation.PostConstruct;
 import java.util.*;

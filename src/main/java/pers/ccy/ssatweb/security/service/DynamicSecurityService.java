@@ -1,4 +1,4 @@
-package pers.ccy.security.service;
+package pers.ccy.ssatweb.security.service;
 
 import org.springframework.security.access.ConfigAttribute;
 

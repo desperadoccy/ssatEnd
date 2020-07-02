@@ -1,4 +1,4 @@
-package pers.ccy.security.config;
+package pers.ccy.ssatweb.security.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

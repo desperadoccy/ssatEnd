@@ -1,4 +1,4 @@
-package pers.ccy.security.config;
+package pers.ccy.ssatweb.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -14,9 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pers.ccy.security.component.*;
-import pers.ccy.security.service.DynamicSecurityService;
-import pers.ccy.security.utils.JwtTokenUtil;
+import pers.ccy.ssatweb.security.service.DynamicSecurityService;
+import pers.ccy.ssatweb.security.utils.JwtTokenUtil;
 
 /**
  * @author desperado

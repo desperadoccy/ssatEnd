@@ -1,4 +1,4 @@
-package pers.ccy.security.component;
+package pers.ccy.ssatweb.security.component;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -8,7 +8,7 @@ import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import pers.ccy.security.config.IgnoreUrlsConfig;
+import pers.ccy.ssatweb.security.config.IgnoreUrlsConfig;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

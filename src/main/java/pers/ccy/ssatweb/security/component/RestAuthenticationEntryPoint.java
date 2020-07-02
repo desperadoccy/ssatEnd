@@ -1,10 +1,9 @@
-package pers.ccy.security.component;
+package pers.ccy.ssatweb.security.component;
 
 import cn.hutool.json.JSONUtil;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
-import pers.ccy.security.common.CommonResult;
+import pers.ccy.ssatweb.security.common.CommonResult;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

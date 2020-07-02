@@ -64,4 +64,13 @@ public interface SsatRoleDao {
      */
     int deleteById(Long id);
 
+
+    /**
+     * 通过adminId查询数据
+     *
+     * @param adminId
+     * @return 影响行数
+     */
+    List<SsatRole> queryByAdminId(Long adminId);
+
 }

@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import pers.ccy.ssatweb.domain.SsatResource;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:24:13
  */
+@Mapper
 public interface SsatResourceDao {
 
     /**

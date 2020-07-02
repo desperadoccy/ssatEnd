@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="pers.ccy.ssatweb.dao.RoleResourceRelationDao">
-  <resultMap id="BaseResultMap" type="pers.ccy.ssatweb.domain.RoleResourceRelation">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="role_id" jdbcType="BIGINT" property="roleId" />
-    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, role_id, menu_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from role_menu_relation
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from role_menu_relation
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="pers.ccy.ssatweb.domain.RoleResourceRelation" useGeneratedKeys="true">
-    insert into role_menu_relation (role_id, menu_id)
-    values (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="pers.ccy.ssatweb.domain.RoleResourceRelation" useGeneratedKeys="true">
-    insert into role_menu_relation
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="menuId != null">
-        menu_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="roleId != null">
-        #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="menuId != null">
-        #{menuId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="pers.ccy.ssatweb.domain.RoleResourceRelation">
-    update role_menu_relation
-    <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="menuId != null">
-        menu_id = #{menuId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="pers.ccy.ssatweb.domain.RoleResourceRelation">
-    update role_menu_relation
-    set role_id = #{roleId,jdbcType=BIGINT},
-      menu_id = #{menuId,jdbcType=BIGINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+    <resultMap type="pers.ccy.ssatweb.domain.RoleResourceRelation" id="RoleResourceRelationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="resourceId" column="resource_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="RoleResourceRelationMap">
+        select
+          id, role_id, resource_id
+        from SSAT.role_resource_relation
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="RoleResourceRelationMap">
+        select
+          id, role_id, resource_id
+        from SSAT.role_resource_relation
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="RoleResourceRelationMap">
+        select
+          id, role_id, resource_id
+        from SSAT.role_resource_relation
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="resourceId != null">
+                and resource_id = #{resourceId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into SSAT.role_resource_relation(role_id, resource_id)
+        values (#{roleId}, #{resourceId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update SSAT.role_resource_relation
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+            <if test="resourceId != null">
+                resource_id = #{resourceId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from SSAT.role_resource_relation where id = #{id}
+    </delete>
+
 </mapper>

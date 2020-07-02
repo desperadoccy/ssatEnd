@@ -1,25 +1,31 @@
 package pers.ccy.ssatweb.domain;
 
+import java.util.Date;
 import java.io.Serializable;
 
 /**
- * role_menu_relation
- * @author 
+ * (SsatResourceCategory)实体类
+ *
+ * @author makejava
+ * @since 2020-07-02 09:24:28
  */
 public class SsatResourceCategory implements Serializable {
+    private static final long serialVersionUID = -58089944396754143L;
+    
     private Long id;
-
     /**
-     * 角色ID
-     */
-    private Long roleId;
-
+    * 创建时间
+    */
+    private Date createTime;
     /**
-     * 菜单ID
-     */
-    private Long menuId;
+    * 分类名称
+    */
+    private String name;
+    /**
+    * 排序
+    */
+    private Integer sort;
 
-    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -29,19 +35,28 @@ public class SsatResourceCategory implements Serializable {
         this.id = id;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public String getName() {
+        return name;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
+    public void setName(String name) {
+        this.name = name;
     }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
 }

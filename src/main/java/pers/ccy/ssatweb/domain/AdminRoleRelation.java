@@ -3,23 +3,20 @@ package pers.ccy.ssatweb.domain;
 import java.io.Serializable;
 
 /**
- * role_menu_relation
- * @author 
+ * (AdminRoleRelation)实体类
+ *
+ * @author makejava
+ * @since 2020-07-02 09:22:36
  */
 public class AdminRoleRelation implements Serializable {
+    private static final long serialVersionUID = -24711798052173671L;
+    
     private Long id;
-
-    /**
-     * 角色ID
-     */
+    
+    private Long adminId;
+    
     private Long roleId;
 
-    /**
-     * 菜单ID
-     */
-    private Long menuId;
-
-    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -27,6 +24,14 @@ public class AdminRoleRelation implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
     }
 
     public Long getRoleId() {
@@ -37,11 +42,4 @@ public class AdminRoleRelation implements Serializable {
         this.roleId = roleId;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
 }

@@ -1,5 +1,7 @@
 package pers.ccy.ssatweb.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,11 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import pers.ccy.ssatweb.dao.AdminRoleRelationDao;
-import pers.ccy.ssatweb.dao.SsatAdminDao;
-import pers.ccy.ssatweb.dao.SsatRoleDao;
+import pers.ccy.ssatweb.dao.*;
 import pers.ccy.ssatweb.domain.*;
 import pers.ccy.ssatweb.dto.SsatAdminDTO;
 import pers.ccy.ssatweb.dto.UpdateAdminPasswordDTO;
@@ -23,6 +24,7 @@ import pers.ccy.ssatweb.service.SsatAdminService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author desperado
@@ -31,6 +33,7 @@ import java.util.List;
  * @date 2020/7/2 0:58
  * @Version 1.0
  */
+@Service
 public class SsatAdminServiceImpl implements SsatAdminService {
     @Autowired
     private SsatAdminDao ssatAdminDao;
@@ -38,6 +41,8 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     private SsatRoleDao ssatRoleDao;
     @Autowired
     private AdminRoleRelationDao adminRoleRelationDao;
+    @Autowired
+    private AdminPermissionRelationDao adminPermissionRelationDao;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -53,6 +58,7 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     public SsatAdmin register(SsatAdminDTO ssatAdminDTO) {
         SsatAdmin ssatAdmin = SsatAdmin.parseBy(ssatAdminDTO);
         ssatAdmin.setCreateTime(new Date());
+        ssatAdmin.setPassword(passwordEncoder.encode(ssatAdmin.getPassword()));
         ssatAdmin.setStatus(1);
         try {
             ssatAdminDao.insert(ssatAdmin);
@@ -65,7 +71,6 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     @Override
     public String login(String username, String password) {
         String token = null;
-        //密码需要客户端加密后传递
         try {
             UserDetails userDetails = loadUserByUsername(username);
             if(!passwordEncoder.matches(password,userDetails.getPassword())){
@@ -142,33 +147,64 @@ public class SsatAdminServiceImpl implements SsatAdminService {
 
     @Override
     public int updatePermission(Long adminId, List<Long> permissionIds) {
-//        //删除原所有权限关系
-//        adminPermissionRelationMapper.deleteByAdminId(adminId);
-//        //获取用户所有角色权限
-//        List<UmsPermission> permissionList = adminRoleRelationDao.getRolePermissionList(adminId);
-//        List<Long> rolePermissionList = permissionList.stream().map(UmsPermission::getId).collect(Collectors.toList());
-//        if (!CollectionUtils.isEmpty(permissionIds)) {
-//            List<UmsAdminPermissionRelation> relationList = new ArrayList<>();
-//            //筛选出+权限
-//            List<Long> addPermissionIdList = permissionIds.stream().filter(permissionId -> !rolePermissionList.contains(permissionId)).collect(Collectors.toList());
-//            //筛选出-权限
-//            List<Long> subPermissionIdList = rolePermissionList.stream().filter(permissionId -> !permissionIds.contains(permissionId)).collect(Collectors.toList());
-//            //插入+-权限关系
-//            relationList.addAll(convert(adminId,1,addPermissionIdList));
-//            relationList.addAll(convert(adminId,-1,subPermissionIdList));
-//            return adminPermissionRelationDao.insertList(relationList);
-//        }
+        //删除原所有权限关系
+        adminPermissionRelationDao.deleteByAdminId(adminId);
+        //获取用户所有角色权限
+        List<SsatPermission> permissionList = adminRoleRelationDao.getRolePermissionList(adminId);
+        List<Long> rolePermissionList = permissionList.stream().map(SsatPermission::getId).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(permissionIds)) {
+            List<AdminPermissionRelation> relationList = new ArrayList<>();
+            //筛选出+权限
+            List<Long> addPermissionIdList = permissionIds.stream().filter(permissionId -> !rolePermissionList.contains(permissionId)).collect(Collectors.toList());
+            //筛选出-权限
+            List<Long> subPermissionIdList = rolePermissionList.stream().filter(permissionId -> !permissionIds.contains(permissionId)).collect(Collectors.toList());
+            //插入+-权限关系
+            relationList.addAll(convert(adminId,1,addPermissionIdList));
+            relationList.addAll(convert(adminId,-1,subPermissionIdList));
+            for (AdminPermissionRelation relation : relationList)
+                adminPermissionRelationDao.insert(relation);
+            return 1;
+        }
         return 0;
+    }
+
+    /**
+     * 将+-权限关系转化为对象
+     */
+    private List<AdminPermissionRelation> convert(Long adminId,Integer type,List<Long> permissionIdList) {
+        List<AdminPermissionRelation> relationList = permissionIdList.stream().map(permissionId -> {
+            AdminPermissionRelation relation = new AdminPermissionRelation();
+            relation.setAdminId(adminId);
+            relation.setType(type);
+            relation.setPermissionId(permissionId);
+            return relation;
+        }).collect(Collectors.toList());
+        return relationList;
     }
 
     @Override
     public List<SsatPermission> getPermissionList(Long adminId) {
-        return null;
+        return adminRoleRelationDao.getPermissionList(adminId);
     }
 
     @Override
-    public int updatePassword(UpdateAdminPasswordDTO updateAdminPasswordDTO) {
-        return 0;
+    public int updatePassword(UpdateAdminPasswordDTO dto) {
+        if(StrUtil.isEmpty(dto.getUsername())
+                ||StrUtil.isEmpty(dto.getOldPassword())
+                ||StrUtil.isEmpty(dto.getNewPassword())){
+            return -1;
+        }
+        List<SsatAdmin> adminList = ssatAdminDao.selectAdmin(dto.getUsername());
+        if(CollUtil.isEmpty(adminList)){
+            return -2;
+        }
+        SsatAdmin admin = adminList.get(0);
+        if(!passwordEncoder.matches(dto.getOldPassword(),admin.getPassword())){
+            return -3;
+        }
+        admin.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        ssatAdminDao.update(admin);
+        return 1;
     }
 
     @Override

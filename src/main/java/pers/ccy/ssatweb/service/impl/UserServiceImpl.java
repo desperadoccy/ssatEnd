@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.dao.UserDao;
 import pers.ccy.ssatweb.domain.UserInfo;
-import pers.ccy.ssatweb.security.LoginUser;
-import pers.ccy.ssatweb.security.service.UserLoginService;
 import pers.ccy.ssatweb.service.UserService;
 import pers.ccy.ssatweb.vo.UserVO;
 import pers.ccy.ssatweb.vo.UsersVO;
@@ -29,8 +27,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserLoginService userLoginService;
 
     @Override
     public UserInfo findUserByUsername(String name) {
@@ -66,18 +62,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public RespBean updateStatus(int userId, int status) {
         //设置不可更改白名单
-        if (userDao.findUserInWhiteList(userId) != null) {
-            return RespBean.error("该用户为超级管理员，无法改变状态");
-        }
-        LoginUser loginUser = userLoginService.getLoginUser();
-        if (loginUser.getId() == userId)
-            return RespBean.error("不能改变自己的状态");
-        try {
-            userDao.updateUserStatus(userId, status);
-            return RespBean.ok("更新成功");
-        } catch (Exception e) {
-            return RespBean.error("更新失败");
-        }
+//        if (userDao.findUserInWhiteList(userId) != null) {
+//            return RespBean.error("该用户为超级管理员，无法改变状态");
+//        }
+//        LoginUser loginUser = userLoginService.getLoginUser();
+//        if (loginUser.getId() == userId)
+//            return RespBean.error("不能改变自己的状态");
+//        try {
+//            userDao.updateUserStatus(userId, status);
+//            return RespBean.ok("更新成功");
+//        } catch (Exception e) {
+//            return RespBean.error("更新失败");
+//        }
+        return null;
     }
 
     @Override
@@ -103,19 +100,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RespBean deleteUser(int id) {
-        //设置不可更改白名单
-        if (userDao.findUserInWhiteList(id) != null) {
-            return RespBean.error("该用户为超级管理员，无法删除");
-        }
-        LoginUser loginUser = userLoginService.getLoginUser();
-        if (loginUser.getId() == id)
-            return RespBean.error("不能删除自己");
-        try {
-            userDao.deleteUser(id);
-            return RespBean.ok("删除成功");
-        } catch (Exception e) {
-            return RespBean.error("删除失败");
-        }
+//        //设置不可更改白名单
+//        if (userDao.findUserInWhiteList(id) != null) {
+//            return RespBean.error("该用户为超级管理员，无法删除");
+//        }
+//        LoginUser loginUser = userLoginService.getLoginUser();
+//        if (loginUser.getId() == id)
+//            return RespBean.error("不能删除自己");
+//        try {
+//            userDao.deleteUser(id);
+//            return RespBean.ok("删除成功");
+//        } catch (Exception e) {
+//            return RespBean.error("删除失败");
+//        }
+        return null;
     }
 
 

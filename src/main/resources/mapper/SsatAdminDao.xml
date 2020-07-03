@@ -34,7 +34,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="SsatAdminMap">
         select
-          id, username, password, icon, email, nick_name, note, create_time, login_time, status
+        id, username, password, icon, email, nick_name, note, create_time, login_time, status
         from SSAT.ssat_admin
         <where>
             <if test="id != null">
@@ -116,4 +116,17 @@
         delete from SSAT.ssat_admin where id = #{id}
     </delete>
 
+    <select id="selectAdmin" resultMap="SsatAdminMap">
+        select
+          id, username, password, icon, email, nick_name, note, create_time, login_time, status
+        from SSAT.ssat_admin
+        where username like #{username}
+    </select>
+
+    <select id="getAdminByUsername" resultMap="SsatAdminMap">
+        select
+          id, username, password, icon, email, nick_name, note, create_time, login_time, status
+        from SSAT.ssat_admin
+        where username = #{username}
+    </select>
 </mapper>

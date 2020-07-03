@@ -1,15 +1,15 @@
 package pers.ccy.ssatweb.service;
 
-import pers.ccy.ssatweb.domain.SsatResource;
+import pers.ccy.ssatweb.domain.RolePermissionRelation;
 import java.util.List;
 
 /**
- * (SsatResource)表服务接口
+ * (RolePermissionRelation)表服务接口
  *
  * @author makejava
- * @since 2020-07-02 09:24:13
+ * @since 2020-07-02 23:10:15
  */
-public interface SsatResourceService {
+public interface RolePermissionRelationService {
 
     /**
      * 通过ID查询单条数据
@@ -17,7 +17,7 @@ public interface SsatResourceService {
      * @param id 主键
      * @return 实例对象
      */
-    SsatResource queryById(Long id);
+    RolePermissionRelation queryById(Long id);
 
     /**
      * 查询多条数据
@@ -26,23 +26,23 @@ public interface SsatResourceService {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<SsatResource> queryAllByLimit(int offset, int limit);
+    List<RolePermissionRelation> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
      *
-     * @param ssatResource 实例对象
+     * @param rolePermissionRelation 实例对象
      * @return 实例对象
      */
-    SsatResource insert(SsatResource ssatResource);
+    RolePermissionRelation insert(RolePermissionRelation rolePermissionRelation);
 
     /**
      * 修改数据
      *
-     * @param ssatResource 实例对象
+     * @param rolePermissionRelation 实例对象
      * @return 实例对象
      */
-    SsatResource update(SsatResource ssatResource);
+    RolePermissionRelation update(RolePermissionRelation rolePermissionRelation);
 
     /**
      * 通过主键删除数据
@@ -52,11 +52,4 @@ public interface SsatResourceService {
      */
     boolean deleteById(Long id);
 
-    /**
-     * 查询所有数据
-     *
-     * @param
-     * @return 查询结果
-     */
-    List<SsatResource> listAll();
 }

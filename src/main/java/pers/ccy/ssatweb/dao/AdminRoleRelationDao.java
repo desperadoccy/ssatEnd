@@ -3,6 +3,7 @@ package pers.ccy.ssatweb.dao;
 import org.apache.ibatis.annotations.Mapper;
 import pers.ccy.ssatweb.domain.AdminRoleRelation;
 import org.apache.ibatis.annotations.Param;
+import pers.ccy.ssatweb.domain.SsatPermission;
 import pers.ccy.ssatweb.domain.SsatResource;
 
 import java.util.List;
@@ -78,7 +79,23 @@ public interface AdminRoleRelationDao {
      * 通过adminId查询数据
      *
      * @param adminId
-     * @return 影响行数
+     * @return 结果
      */
     List<SsatResource> getResourceList(Long adminId);
+
+    /**
+     * 通过adminId查询权限列表
+     *
+     * @param adminId
+     * @return 结果
+     */
+    List<SsatPermission> getRolePermissionList(Long adminId);
+
+    /**
+     * 通过adminId查询权限列表
+     *
+     * @param adminId
+     * @return 结果
+     */
+    List<SsatPermission> getPermissionList(Long adminId);
 }

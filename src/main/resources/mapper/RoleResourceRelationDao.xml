@@ -67,4 +67,7 @@
         delete from SSAT.role_resource_relation where id = #{id}
     </delete>
 
+    <delete id="deleteByRoleId">
+        delete from SSAT.role_resource_relation where role_id = #{roleId}
+    </delete>
 </mapper>

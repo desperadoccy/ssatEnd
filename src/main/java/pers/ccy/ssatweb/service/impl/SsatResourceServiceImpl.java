@@ -34,7 +34,7 @@ public class SsatResourceServiceImpl implements SsatResourceService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -75,5 +75,16 @@ public class SsatResourceServiceImpl implements SsatResourceService {
     @Override
     public boolean deleteById(Long id) {
         return this.ssatResourceDao.deleteById(id) > 0;
+    }
+
+    /**
+     * 查询所有数据
+     *
+     * @param
+     * @return 查询结果
+     */
+    @Override
+    public List<SsatResource> listAll() {
+        return ssatResourceDao.queryAll(new SsatResource());
     }
 }

@@ -1,11 +1,17 @@
 package pers.ccy.ssatweb.service.impl;
 
-import pers.ccy.ssatweb.domain.SsatRole;
+import com.github.pagehelper.PageHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import pers.ccy.ssatweb.dao.RolePermissionRelationDao;
+import pers.ccy.ssatweb.dao.RoleResourceRelationDao;
+import pers.ccy.ssatweb.domain.*;
 import pers.ccy.ssatweb.dao.SsatRoleDao;
 import pers.ccy.ssatweb.service.SsatRoleService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +24,10 @@ import java.util.List;
 public class SsatRoleServiceImpl implements SsatRoleService {
     @Resource
     private SsatRoleDao ssatRoleDao;
+    @Autowired
+    private RolePermissionRelationDao rolePermissionRelationDao;
+    @Autowired
+    private RoleResourceRelationDao roleResourceRelationDao;
 
     /**
      * 通过ID查询单条数据
@@ -75,5 +85,59 @@ public class SsatRoleServiceImpl implements SsatRoleService {
     @Override
     public boolean deleteById(Long id) {
         return this.ssatRoleDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<SsatPermission> getPermissionList(Long roleId) {
+        return rolePermissionRelationDao.getPermissionList(roleId);
+    }
+
+    @Override
+    public int updatePermission(Long roleId, List<Long> permissionIds) {
+        //先删除原有关系
+        rolePermissionRelationDao.deleteByRoleId(roleId);
+        //批量插入新关系
+        List<RolePermissionRelation> relationList = new ArrayList<>();
+        for (Long permissionId : permissionIds) {
+            RolePermissionRelation relation = new RolePermissionRelation();
+            relation.setRoleId(roleId);
+            relation.setPermissionId(permissionId);
+            rolePermissionRelationDao.insert(relation);
+        }
+        return 1;
+    }
+
+    @Override
+    public List<SsatRole> list() {
+        return ssatRoleDao.queryAll(new SsatRole());
+    }
+
+    @Override
+    public List<SsatRole> list(String keyword, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (!StringUtils.isEmpty(keyword)) {
+            String query  = "%" + keyword + "%";
+            return ssatRoleDao.queryByName(query);
+        }
+        return null;
+    }
+
+    @Override
+    public List<SsatResource> listResource(Long roleId) {
+        return ssatRoleDao.getResourceListByRoleId(roleId);
+    }
+
+    @Override
+    public int allocResource(Long roleId, List<Long> resourceIds) {
+        //先删除原有关系
+        roleResourceRelationDao.deleteByRoleId(roleId);
+        //批量插入新关系
+        for (Long resourceId : resourceIds) {
+            RoleResourceRelation relation = new RoleResourceRelation();
+            relation.setRoleId(roleId);
+            relation.setResourceId(resourceId);
+            roleResourceRelationDao.insert(relation);
+        }
+        return resourceIds.size();
     }
 }

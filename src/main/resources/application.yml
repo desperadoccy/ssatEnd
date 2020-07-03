@@ -36,4 +36,5 @@ jwt:
 secure:
   ignored:
     urls:
-      - /**/**
+      - /admin/login
+      - /admin/register

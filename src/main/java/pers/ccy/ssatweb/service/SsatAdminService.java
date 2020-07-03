@@ -8,6 +8,7 @@ import pers.ccy.ssatweb.domain.SsatResource;
 import pers.ccy.ssatweb.domain.SsatRole;
 import pers.ccy.ssatweb.dto.SsatAdminDTO;
 import pers.ccy.ssatweb.dto.UpdateAdminPasswordDTO;
+import pers.ccy.ssatweb.vo.SsatAdminVO;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public interface SsatAdminService {
     /**
      * 根据用户名或昵称分页查询用户
      */
-    List<SsatAdmin> list(String keyword, Integer pageSize, Integer pageNum);
+    List<SsatAdminVO> list(String keyword, Integer pageSize, Integer pageNum);
 
     /**
      * 修改指定用户信息
@@ -61,7 +62,7 @@ public interface SsatAdminService {
     /**
      * 删除指定用户
      */
-    int delete(Long id);
+    int delete(Long id) throws Exception;
 
     /**
      * 修改用户角色关系
@@ -99,4 +100,8 @@ public interface SsatAdminService {
      * 获取用户信息
      */
     UserDetails loadUserByUsername(String username);
+
+    void updateStatus(Long userId, int status) throws Exception;
+
+    SsatAdminVO getAdminById(Long userId);
 }

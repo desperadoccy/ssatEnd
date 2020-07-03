@@ -120,7 +120,9 @@
         select
           id, username, password, icon, email, nick_name, note, create_time, login_time, status
         from SSAT.ssat_admin
-        where username like #{username}
+        <if test="username != null">
+             where username like #{username}
+        </if>
     </select>
 
     <select id="getAdminByUsername" resultMap="SsatAdminMap">
@@ -129,4 +131,8 @@
         from SSAT.ssat_admin
         where username = #{username}
     </select>
+
+    <update id="updateStatus">
+        update ssat_admin set status = #{status} where id = #{userId} ;
+    </update>
 </mapper>

@@ -5,6 +5,7 @@ import pers.ccy.ssatweb.domain.AdminRoleRelation;
 import org.apache.ibatis.annotations.Param;
 import pers.ccy.ssatweb.domain.SsatPermission;
 import pers.ccy.ssatweb.domain.SsatResource;
+import pers.ccy.ssatweb.domain.SsatRole;
 
 import java.util.List;
 

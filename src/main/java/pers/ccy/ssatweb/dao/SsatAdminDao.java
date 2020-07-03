@@ -78,4 +78,6 @@ public interface SsatAdminDao {
      * @return
      */
     List<SsatAdmin> selectAdmin(String username);
+
+    int updateStatus(Long userId,int status);
 }

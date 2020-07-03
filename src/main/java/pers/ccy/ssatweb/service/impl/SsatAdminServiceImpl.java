@@ -20,6 +20,8 @@ import pers.ccy.ssatweb.dto.SsatAdminDTO;
 import pers.ccy.ssatweb.dto.UpdateAdminPasswordDTO;
 import pers.ccy.ssatweb.security.utils.JwtTokenUtil;
 import pers.ccy.ssatweb.service.SsatAdminService;
+import pers.ccy.ssatweb.utils.ServletUtil;
+import pers.ccy.ssatweb.vo.SsatAdminVO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,7 +75,7 @@ public class SsatAdminServiceImpl implements SsatAdminService {
         String token = null;
         try {
             UserDetails userDetails = loadUserByUsername(username);
-            if(!passwordEncoder.matches(password,userDetails.getPassword())){
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -96,13 +98,18 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     }
 
     @Override
-    public List<SsatAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
+    public List<SsatAdminVO> list(String keyword, Integer pageSize, Integer pageNum) {
         PageHelper.startPage(pageNum, pageSize);
-        if (!StringUtils.isEmpty(keyword)) {
-            String query = "%" + keyword + "%";
-            return ssatAdminDao.selectAdmin(query);
+        String query = null;
+        if (keyword != null)
+            query = "%" + keyword + "%";
+        List<SsatAdmin> adminList = ssatAdminDao.selectAdmin(query);
+        List<String> roleList = new ArrayList<>();
+        for (SsatAdmin admin : adminList) {
+            String name = ssatRoleDao.queryByAdminId(admin.getId()).get(0).getName();
+            roleList.add(name);
         }
-        return null;
+        return SsatAdminVO.parseBy(adminList, roleList);
     }
 
     @Override
@@ -112,7 +119,11 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     }
 
     @Override
-    public int delete(Long id) {
+    public int delete(Long id) throws Exception {
+        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization"));
+        SsatAdmin admin = ssatAdminDao.getAdminByUsername(name);
+        if (admin.getId() == id)
+            throw new Exception("不能删除自己");
         return ssatAdminDao.deleteById(id);
     }
 
@@ -159,8 +170,8 @@ public class SsatAdminServiceImpl implements SsatAdminService {
             //筛选出-权限
             List<Long> subPermissionIdList = rolePermissionList.stream().filter(permissionId -> !permissionIds.contains(permissionId)).collect(Collectors.toList());
             //插入+-权限关系
-            relationList.addAll(convert(adminId,1,addPermissionIdList));
-            relationList.addAll(convert(adminId,-1,subPermissionIdList));
+            relationList.addAll(convert(adminId, 1, addPermissionIdList));
+            relationList.addAll(convert(adminId, -1, subPermissionIdList));
             for (AdminPermissionRelation relation : relationList)
                 adminPermissionRelationDao.insert(relation);
             return 1;
@@ -171,7 +182,7 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     /**
      * 将+-权限关系转化为对象
      */
-    private List<AdminPermissionRelation> convert(Long adminId,Integer type,List<Long> permissionIdList) {
+    private List<AdminPermissionRelation> convert(Long adminId, Integer type, List<Long> permissionIdList) {
         List<AdminPermissionRelation> relationList = permissionIdList.stream().map(permissionId -> {
             AdminPermissionRelation relation = new AdminPermissionRelation();
             relation.setAdminId(adminId);
@@ -189,17 +200,17 @@ public class SsatAdminServiceImpl implements SsatAdminService {
 
     @Override
     public int updatePassword(UpdateAdminPasswordDTO dto) {
-        if(StrUtil.isEmpty(dto.getUsername())
-                ||StrUtil.isEmpty(dto.getOldPassword())
-                ||StrUtil.isEmpty(dto.getNewPassword())){
+        if (StrUtil.isEmpty(dto.getUsername())
+                || StrUtil.isEmpty(dto.getOldPassword())
+                || StrUtil.isEmpty(dto.getNewPassword())) {
             return -1;
         }
         List<SsatAdmin> adminList = ssatAdminDao.selectAdmin(dto.getUsername());
-        if(CollUtil.isEmpty(adminList)){
+        if (CollUtil.isEmpty(adminList)) {
             return -2;
         }
         SsatAdmin admin = adminList.get(0);
-        if(!passwordEncoder.matches(dto.getOldPassword(),admin.getPassword())){
+        if (!passwordEncoder.matches(dto.getOldPassword(), admin.getPassword())) {
             return -3;
         }
         admin.setPassword(passwordEncoder.encode(dto.getNewPassword()));
@@ -213,8 +224,26 @@ public class SsatAdminServiceImpl implements SsatAdminService {
         SsatAdmin admin = getAdminByUsername(username);
         if (admin != null) {
             List<SsatResource> resourceList = getResourceList(admin.getId());
-            return new AdminUserDetails(admin,resourceList);
+            return new AdminUserDetails(admin, resourceList);
         }
         throw new UsernameNotFoundException("用户名或密码错误");
+    }
+
+    @Override
+    public void updateStatus(Long userId, int status) throws Exception {
+        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization"));
+        SsatAdmin admin = ssatAdminDao.getAdminByUsername(name);
+        if (admin.getId() == userId)
+            throw new Exception("不能修改自己的状态");
+        List<SsatRole> roles = ssatRoleDao.queryByAdminId(userId);
+        ssatAdminDao.updateStatus(userId, status);
+    }
+
+    @Override
+    public SsatAdminVO getAdminById(Long userId) {
+        SsatAdmin ssatAdmin = ssatAdminDao.queryById(userId);
+        List<SsatRole> roles = ssatRoleDao.queryByAdminId(userId);
+        SsatAdminVO ssatAdminVO = SsatAdminVO.parseBy(ssatAdmin, roles.get(0).getName());
+        return ssatAdminVO;
     }
 }

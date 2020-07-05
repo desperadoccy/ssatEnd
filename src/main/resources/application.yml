@@ -38,3 +38,4 @@ secure:
     urls:
       - /admin/login
       - /admin/register
+      - /menu/all

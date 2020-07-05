@@ -5,16 +5,16 @@ package pers.ccy.ssatweb.security.common;
  * Created by macro on 2019/4/19.
  */
 public class CommonResult<T> {
-    private long code;
-    private String message;
+    private long status;
+    private String msg;
     private T data;
 
     protected CommonResult() {
     }
 
     protected CommonResult(long code, String message, T data) {
-        this.code = code;
-        this.message = message;
+        this.status = code;
+        this.msg = message;
         this.data = data;
     }
 
@@ -89,20 +89,20 @@ public class CommonResult<T> {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
     }
 
-    public long getCode() {
-        return code;
+    public long getStatus() {
+        return status;
     }
 
-    public void setCode(long code) {
-        this.code = code;
+    public void setStatus(long status) {
+        this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public T getData() {

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.SsatAdmin;
 import pers.ccy.ssatweb.dto.SsatAdminDTO;
+import pers.ccy.ssatweb.service.AdminRoleRelationService;
 import pers.ccy.ssatweb.service.SsatAdminService;
 import pers.ccy.ssatweb.service.SsatRoleService;
 import pers.ccy.ssatweb.vo.SsatAdminVO;
@@ -31,6 +32,8 @@ public class SsatAdminController {
     @Autowired
     private SsatAdminService adminService;
     @Autowired
+    private AdminRoleRelationService adminRoleRelationService;
+    @Autowired
     private SsatRoleService roleService;
 
     @PostMapping(value = "/register")
@@ -39,7 +42,7 @@ public class SsatAdminController {
             SsatAdmin register = adminService.register(ssatAdminDTO);
             return RespBean.ok("注册成功", register);
         } catch (Exception e) {
-            return RespBean.error("注册失败");
+            return RespBean.error(e.getMessage());
         }
     }
 
@@ -59,13 +62,17 @@ public class SsatAdminController {
     }
 
     @GetMapping("/find")
-    public RespBean findUser(int pageNum, int pageSize, String query) {
+    public RespBean findUser(Integer pageNum, Integer pageSize, String query) {
         try {
             String queryLike = null;
-            if (query != null)
+            if (query != null && query != "")
                 queryLike = "%" + query + "%";
             List<SsatAdminVO> list = adminService.list(queryLike, pageSize, pageNum);
-            return RespBean.ok("查询成功", list);
+            int count = adminService.count();
+            Map<String,Object> map = new HashMap<>();
+            map.put("count",count);
+            map.put("users",list);
+            return RespBean.ok("查询成功", map);
         } catch (Exception e) {
             return RespBean.error("查询失败");
         }
@@ -112,4 +119,14 @@ public class SsatAdminController {
         }
     }
 
+
+    @GetMapping(value = "/updateRole")
+    public RespBean updateRole(Long userId,Long roleId){
+        try {
+            adminRoleRelationService.updateRole(userId, roleId);
+            return RespBean.ok("更新成功");
+        }catch (Exception e){
+            return RespBean.error("更新失败");
+        }
+    }
 }

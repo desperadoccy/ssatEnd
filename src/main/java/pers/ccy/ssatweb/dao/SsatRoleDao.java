@@ -75,4 +75,7 @@ public interface SsatRoleDao {
     List<SsatRole> queryByAdminId(Long adminId);
     List<SsatRole> queryByName(String keyword);
     List<SsatResource> getResourceListByRoleId(Long roleId);
+    int count();
+    void addCount(Long roleId);
+    void subCount(Long roleId);
 }

@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.domain.RoleResourceRelation;
 import pers.ccy.ssatweb.dao.RoleResourceRelationDao;
 import pers.ccy.ssatweb.service.RoleResourceRelationService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:19:42
  */
+@Transactional
 @Service("roleResourceRelationService")
 public class RoleResourceRelationServiceImpl implements RoleResourceRelationService {
     @Resource
@@ -76,4 +78,11 @@ public class RoleResourceRelationServiceImpl implements RoleResourceRelationServ
     public boolean deleteById(Long id) {
         return this.roleResourceRelationDao.deleteById(id) > 0;
     }
+
+    @Override
+    public boolean delete(Long roleId, Long resourceId) {
+        return roleResourceRelationDao.delete(roleId,resourceId);
+    }
+
+
 }

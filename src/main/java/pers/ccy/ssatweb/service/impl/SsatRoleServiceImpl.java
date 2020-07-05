@@ -2,17 +2,23 @@ package pers.ccy.ssatweb.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import pers.ccy.ssatweb.dao.RolePermissionRelationDao;
 import pers.ccy.ssatweb.dao.RoleResourceRelationDao;
+import pers.ccy.ssatweb.dao.SsatResourceDao;
 import pers.ccy.ssatweb.domain.*;
 import pers.ccy.ssatweb.dao.SsatRoleDao;
 import pers.ccy.ssatweb.service.SsatRoleService;
 import org.springframework.stereotype.Service;
+import pers.ccy.ssatweb.vo.SsatResourceVO;
+import pers.ccy.ssatweb.vo.SsatRoleVO;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (SsatRole)表服务实现类
@@ -20,6 +26,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:24:28
  */
+@Transactional
 @Service("ssatRoleService")
 public class SsatRoleServiceImpl implements SsatRoleService {
     @Resource
@@ -28,6 +35,8 @@ public class SsatRoleServiceImpl implements SsatRoleService {
     private RolePermissionRelationDao rolePermissionRelationDao;
     @Autowired
     private RoleResourceRelationDao roleResourceRelationDao;
+    @Autowired
+    private SsatResourceDao ssatResourceDao;
 
     /**
      * 通过ID查询单条数据
@@ -139,5 +148,39 @@ public class SsatRoleServiceImpl implements SsatRoleService {
             roleResourceRelationDao.insert(relation);
         }
         return resourceIds.size();
+    }
+
+    @Override
+    public List<SsatRoleVO> listAll() {
+        List<SsatRole> list = list();
+        List<SsatRoleVO> roleVoList = new ArrayList<>();
+        List<SsatResourceVO> resources = null;
+        for (SsatRole role: list){
+            Map<String,List<SsatResourceVO>> category = new HashMap<>();
+            List<SsatResourceVO> resourceList = ssatResourceDao.selectByRoleId(role.getId());
+            if (resourceList.size() == 0) {
+                SsatRoleVO roleVO = SsatRoleVO.parseBy(role, category);
+                roleVoList.add(roleVO);
+                continue;
+            }
+            for (SsatResourceVO resource: resourceList){
+                if (!category.containsKey(resource.getCategoryName())){
+                    if (!category.isEmpty())
+                        category.put(resources.get(0).getCategoryName(),resources);
+                    category.put(resource.getCategoryName(),null);
+                    resources = new ArrayList<>();
+                }
+                resources.add(resource);
+            }
+            category.put(resources.get(0).getCategoryName(),resources);
+            SsatRoleVO roleVO = SsatRoleVO.parseBy(role, category);
+            roleVoList.add(roleVO);
+        }
+        return roleVoList;
+    }
+
+    @Override
+    public List<Long> listAllResourceIds(Long roleId) {
+        return ssatResourceDao.listAllResourceIds(roleId);
     }
 }

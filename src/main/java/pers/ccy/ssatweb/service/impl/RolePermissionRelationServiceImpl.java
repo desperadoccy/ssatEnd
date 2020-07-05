@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.dao.RolePermissionRelationDao;
 import pers.ccy.ssatweb.domain.RolePermissionRelation;
 import pers.ccy.ssatweb.service.RolePermissionRelationService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 23:10:15
  */
+@Transactional
 @Service("rolePermissionRelationService")
 public class RolePermissionRelationServiceImpl implements RolePermissionRelationService {
     @Resource

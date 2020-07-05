@@ -1,7 +1,12 @@
 package pers.ccy.ssatweb.service;
 
 import pers.ccy.ssatweb.domain.SsatResource;
+import pers.ccy.ssatweb.domain.SsatResourceCategory;
+import pers.ccy.ssatweb.vo.SsatResourceCategoryVO;
+import pers.ccy.ssatweb.vo.SsatResourceVO;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * (SsatResource)表服务接口
@@ -59,4 +64,5 @@ public interface SsatResourceService {
      * @return 查询结果
      */
     List<SsatResource> listAll();
+    List<SsatResourceCategoryVO> listAllWithCategory();
 }

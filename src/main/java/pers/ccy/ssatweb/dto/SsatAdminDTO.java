@@ -21,6 +21,10 @@ public class SsatAdminDTO {
      */
     private String username;
     /**
+     * 密码
+     */
+    private String password;
+    /**
      * 头像
      */
     private String icon;
@@ -83,6 +87,14 @@ public class SsatAdminDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public static SsatAdmin parseBy(SsatAdminDTO ssatAdminDTO) {

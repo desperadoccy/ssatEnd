@@ -12,7 +12,7 @@
         <result property="note" column="note" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="loginTime" column="login_time" jdbcType="TIMESTAMP"/>
-        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="active" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -64,8 +64,8 @@
             <if test="loginTime != null">
                 and login_time = #{loginTime}
             </if>
-            <if test="status != null">
-                and status = #{status}
+            <if test="active != null">
+                and status = #{active}
             </if>
         </where>
     </select>
@@ -73,7 +73,7 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into SSAT.ssat_admin(username, password, icon, email, nick_name, note, create_time, login_time, status)
-        values (#{username}, #{password}, #{icon}, #{email}, #{nickName}, #{note}, #{createTime}, #{loginTime}, #{status})
+        values (#{username}, #{password}, #{icon}, #{email}, #{nickName}, #{note}, #{createTime}, #{loginTime}, #{active})
     </insert>
 
     <!--通过主键修改数据-->
@@ -104,8 +104,8 @@
             <if test="loginTime != null">
                 login_time = #{loginTime},
             </if>
-            <if test="status != null">
-                status = #{status},
+            <if test="active != null">
+                status = #{active},
             </if>
         </set>
         where id = #{id}

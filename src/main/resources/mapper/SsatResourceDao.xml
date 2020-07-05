@@ -11,6 +11,16 @@
         <result property="description" column="description" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="pers.ccy.ssatweb.vo.SsatResourceVO" id="SsatResourceVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="SsatResourceMap">
         select
@@ -88,4 +98,18 @@
         delete from SSAT.ssat_resource where id = #{id}
     </delete>
 
+    <select id="selectByRoleId" resultMap="SsatResourceVOMap">
+        select r.*,rc.name category_name from ssat_resource r left join role_resource_relation rrr on rrr.resource_id = r.id left join ssat_resource_category rc on r.category_id = rc.id where rrr.role_id = #{roleId} order by category_id
+    </select>
+
+    <select id="queryAllWithCategory" resultMap="SsatResourceVOMap">
+        select
+          r.*, rc.name category_name
+        from SSAT.ssat_resource r left join ssat_resource_category rc on r.category_id = rc.id
+        order by rc.name
+    </select>
+
+    <select id="listAllResourceIds" resultType="Long">
+        select r.id from ssat_resource r left join role_resource_relation rrr on rrr.resource_id = r.id where rrr.role_id = #{roleId}
+    </select>
 </mapper>

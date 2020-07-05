@@ -3,6 +3,8 @@ package pers.ccy.ssatweb.dao;
 import org.apache.ibatis.annotations.Mapper;
 import pers.ccy.ssatweb.domain.SsatResource;
 import org.apache.ibatis.annotations.Param;
+import pers.ccy.ssatweb.vo.SsatResourceVO;
+
 import java.util.List;
 
 /**
@@ -64,4 +66,9 @@ public interface SsatResourceDao {
      */
     int deleteById(Long id);
 
+    List<SsatResourceVO> selectByRoleId(Long roleId);
+
+    List<SsatResourceVO> queryAllWithCategory(SsatResource ssatResource);
+
+    List<Long> listAllResourceIds(Long roleId);
 }

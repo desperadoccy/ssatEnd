@@ -58,6 +58,6 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return ssatAdmin.getStatus().equals(1);
+        return ssatAdmin.getActive().equals(1);
     }
 }

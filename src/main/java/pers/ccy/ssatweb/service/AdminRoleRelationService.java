@@ -52,4 +52,5 @@ public interface AdminRoleRelationService {
      */
     boolean deleteById(Long id);
 
+    void updateRole(Long userId,Long roleId);
 }

@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.domain.SsatResourceCategory;
 import pers.ccy.ssatweb.dao.SsatResourceCategoryDao;
 import pers.ccy.ssatweb.service.SsatResourceCategoryService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:24:28
  */
+@Transactional
 @Service("ssatResourceCategoryService")
 public class SsatResourceCategoryServiceImpl implements SsatResourceCategoryService {
     @Resource

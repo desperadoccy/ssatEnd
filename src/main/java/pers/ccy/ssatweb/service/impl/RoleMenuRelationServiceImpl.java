@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.domain.RoleMenuRelation;
 import pers.ccy.ssatweb.dao.RoleMenuRelationDao;
 import pers.ccy.ssatweb.service.RoleMenuRelationService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:19:06
  */
+@Transactional
 @Service("roleMenuRelationService")
 public class RoleMenuRelationServiceImpl implements RoleMenuRelationService {
     @Resource

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pers.ccy.ssatweb.dao.*;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * @date 2020/7/2 0:58
  * @Version 1.0
  */
+@Transactional
 @Service
 public class SsatAdminServiceImpl implements SsatAdminService {
     @Autowired
@@ -57,16 +59,16 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     }
 
     @Override
-    public SsatAdmin register(SsatAdminDTO ssatAdminDTO) {
+    public SsatAdmin register(SsatAdminDTO ssatAdminDTO) throws Exception {
         SsatAdmin ssatAdmin = SsatAdmin.parseBy(ssatAdminDTO);
         ssatAdmin.setCreateTime(new Date());
         ssatAdmin.setPassword(passwordEncoder.encode(ssatAdmin.getPassword()));
-        ssatAdmin.setStatus(1);
+        ssatAdmin.setActive(1);
         try {
             ssatAdminDao.insert(ssatAdmin);
             return ssatAdmin;
         } catch (Exception e) {
-            return null;
+            throw new Exception("用户重名");
         }
     }
 
@@ -106,7 +108,10 @@ public class SsatAdminServiceImpl implements SsatAdminService {
         List<SsatAdmin> adminList = ssatAdminDao.selectAdmin(query);
         List<String> roleList = new ArrayList<>();
         for (SsatAdmin admin : adminList) {
-            String name = ssatRoleDao.queryByAdminId(admin.getId()).get(0).getName();
+            List<SsatRole> roleList1 = ssatRoleDao.queryByAdminId(admin.getId());
+            String name = null;
+            if (roleList1 != null && roleList1.size() > 0)
+                name = roleList1.get(0).getName();
             roleList.add(name);
         }
         return SsatAdminVO.parseBy(adminList, roleList);
@@ -120,7 +125,7 @@ public class SsatAdminServiceImpl implements SsatAdminService {
 
     @Override
     public int delete(Long id) throws Exception {
-        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization"));
+        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization").split(" ")[1]);
         SsatAdmin admin = ssatAdminDao.getAdminByUsername(name);
         if (admin.getId() == id)
             throw new Exception("不能删除自己");
@@ -231,7 +236,7 @@ public class SsatAdminServiceImpl implements SsatAdminService {
 
     @Override
     public void updateStatus(Long userId, int status) throws Exception {
-        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization"));
+        String name = jwtTokenUtil.getUserNameFromToken(ServletUtil.getRequest().getHeader("Authorization").split(" ")[1]);
         SsatAdmin admin = ssatAdminDao.getAdminByUsername(name);
         if (admin.getId() == userId)
             throw new Exception("不能修改自己的状态");
@@ -243,7 +248,16 @@ public class SsatAdminServiceImpl implements SsatAdminService {
     public SsatAdminVO getAdminById(Long userId) {
         SsatAdmin ssatAdmin = ssatAdminDao.queryById(userId);
         List<SsatRole> roles = ssatRoleDao.queryByAdminId(userId);
-        SsatAdminVO ssatAdminVO = SsatAdminVO.parseBy(ssatAdmin, roles.get(0).getName());
+        SsatAdminVO ssatAdminVO;
+        if (roles != null && roles.size() > 0)
+            ssatAdminVO = SsatAdminVO.parseBy(ssatAdmin, roles.get(0).getName());
+        else
+            ssatAdminVO = SsatAdminVO.parseBy(ssatAdmin, null);
         return ssatAdminVO;
+    }
+
+    @Override
+    public int count() {
+        return ssatRoleDao.count();
     }
 }

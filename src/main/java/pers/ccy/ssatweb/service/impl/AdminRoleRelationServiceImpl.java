@@ -1,7 +1,11 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import pers.ccy.ssatweb.dao.SsatRoleDao;
 import pers.ccy.ssatweb.domain.AdminRoleRelation;
 import pers.ccy.ssatweb.dao.AdminRoleRelationDao;
+import pers.ccy.ssatweb.domain.SsatRole;
 import pers.ccy.ssatweb.service.AdminRoleRelationService;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +18,13 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:22:36
  */
+@Transactional
 @Service("adminRoleRelationService")
 public class AdminRoleRelationServiceImpl implements AdminRoleRelationService {
     @Resource
     private AdminRoleRelationDao adminRoleRelationDao;
+    @Autowired
+    private SsatRoleDao ssatRoleDao;
 
     /**
      * 通过ID查询单条数据
@@ -75,5 +82,20 @@ public class AdminRoleRelationServiceImpl implements AdminRoleRelationService {
     @Override
     public boolean deleteById(Long id) {
         return this.adminRoleRelationDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public void updateRole(Long userId, Long roleId) {
+        AdminRoleRelation preRole = adminRoleRelationDao.queryByUserId(userId);
+        int flag = adminRoleRelationDao.updateRole(userId, roleId);
+        ssatRoleDao.addCount(roleId);
+        if (flag == 0){
+            AdminRoleRelation relation = new AdminRoleRelation();
+            relation.setAdminId(userId);
+            relation.setRoleId(roleId);
+            adminRoleRelationDao.insert(relation);
+        } else {
+            ssatRoleDao.subCount(preRole.getRoleId());
+        }
     }
 }

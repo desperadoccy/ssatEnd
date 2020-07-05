@@ -122,4 +122,15 @@
         GROUP BY
             r.id
     </select>
+    <select id="count" resultType="int">
+        select count(*) from ssat_admin
+    </select>
+
+    <update id="addCount">
+        update ssat_role set admin_count = `admin_count` + 1 where id = #{roleId}
+    </update>
+
+    <update id="subCount">
+        update ssat_role set admin_count = `admin_count` - 1 where id = #{roleId}
+    </update>
 </mapper>

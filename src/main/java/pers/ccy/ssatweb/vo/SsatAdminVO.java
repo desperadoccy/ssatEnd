@@ -1,8 +1,7 @@
 package pers.ccy.ssatweb.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pers.ccy.ssatweb.domain.SsatAdmin;
-import pers.ccy.ssatweb.domain.SsatRole;
-import pers.ccy.ssatweb.utils.ExtractUtil;
 import pers.ccy.ssatweb.utils.ModelMapperUtil;
 
 import java.util.ArrayList;
@@ -49,7 +48,8 @@ public class SsatAdminVO {
     /**
      * 帐号启用状态：0->禁用；1->启用
      */
-    private Integer status;
+    @JsonProperty("active")
+    private Boolean active;
     /**
      * 身份
      */
@@ -119,12 +119,8 @@ public class SsatAdminVO {
         this.loginTime = loginTime;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public String getRole() {
@@ -142,9 +138,10 @@ public class SsatAdminVO {
         return ssatAdminVOS;
     }
 
-    public static SsatAdminVO parseBy(SsatAdmin admin, String role) {
+    public static SsatAdminVO  parseBy(SsatAdmin admin, String role) {
         SsatAdminVO adminVO = ModelMapperUtil.map(admin, SsatAdminVO.class);
         adminVO.setRole(role);
+        adminVO.setActive(admin.getActive().equals(1));
         return adminVO;
     }
 }

@@ -51,5 +51,5 @@ public interface RoleResourceRelationService {
      * @return 是否成功
      */
     boolean deleteById(Long id);
-
+    boolean delete(Long roleId, Long resourceId);
 }

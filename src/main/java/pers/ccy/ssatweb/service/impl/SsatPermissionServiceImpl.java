@@ -1,6 +1,7 @@
 package pers.ccy.ssatweb.service.impl;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.domain.SsatPermission;
 import pers.ccy.ssatweb.dao.SsatPermissionDao;
 import pers.ccy.ssatweb.domain.SsatPermissionNode;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * @author makejava
  * @since 2020-07-03 15:10:22
  */
+@Transactional
 @Service("ssatPermissionService")
 public class SsatPermissionServiceImpl implements SsatPermissionService {
     @Resource

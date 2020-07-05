@@ -53,7 +53,7 @@ public class SsatAdmin implements Serializable {
     /**
     * 帐号启用状态：0->禁用；1->启用
     */
-    private Integer status;
+    private Integer active;
 
 
     public Long getId() {
@@ -128,12 +128,12 @@ public class SsatAdmin implements Serializable {
         this.loginTime = loginTime;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getActive() {
+        return active;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setActive(Integer active) {
+        this.active = active;
     }
 
     public static List<SsatAdmin> parseBy(List<SsatAdminDTO> list) {

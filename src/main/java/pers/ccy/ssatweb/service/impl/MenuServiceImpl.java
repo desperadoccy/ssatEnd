@@ -2,6 +2,7 @@ package pers.ccy.ssatweb.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.dao.MenuDao;
 import pers.ccy.ssatweb.domain.Menu;
@@ -20,6 +21,7 @@ import java.util.List;
  * @date 2020/5/21 11:13
  * @Version 1.0
  */
+@Transactional
 @Service
 public class MenuServiceImpl implements MenuService {
     @Autowired

@@ -1,5 +1,6 @@
 package pers.ccy.ssatweb.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import pers.ccy.ssatweb.domain.AdminPermissionRelation;
 import pers.ccy.ssatweb.dao.AdminPermissionRelationDao;
 import pers.ccy.ssatweb.service.AdminPermissionRelationService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 23:17:25
  */
+@Transactional
 @Service("adminPermissionRelationService")
 public class AdminPermissionRelationServiceImpl implements AdminPermissionRelationService {
     @Resource

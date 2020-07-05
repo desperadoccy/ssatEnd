@@ -64,4 +64,5 @@ public interface RoleResourceRelationDao {
      */
     int deleteById(Long id);
     int deleteByRoleId(Long roleId);
+    boolean delete(Long roleId, Long resourceId);
 }

@@ -1,42 +1,40 @@
-package pers.ccy.ssatweb.domain;
-
-import pers.ccy.ssatweb.utils.ModelMapperUtil;
-import pers.ccy.ssatweb.vo.SsatResourceVO;
+package pers.ccy.ssatweb.vo;
 
 import java.util.Date;
-import java.io.Serializable;
 
 /**
- * (SsatResource)实体类
- *
- * @author makejava
- * @since 2020-07-02 09:24:13
+ * @author desperado
+ * @ClassName SsatResourceVO
+ * @Description
+ * @date 2020/7/4 23:15
+ * @Version 1.0
  */
-public class SsatResource implements Serializable {
-    private static final long serialVersionUID = 647997591410877272L;
-    
+public class SsatResourceVO {
     private Long id;
     /**
-    * 资源分类ID
-    */
+     * 资源分类ID
+     */
     private Long categoryId;
     /**
-    * 创建时间
-    */
+     * 创建时间
+     */
     private Date createTime;
     /**
-    * 资源名称
-    */
+     * 资源名称
+     */
     private String name;
     /**
-    * 资源URL
-    */
+     * 资源URL
+     */
     private String url;
     /**
-    * 描述
-    */
+     * 描述
+     */
     private String description;
-
+    /**
+     * 所属目录名称
+     */
+    private String categoryName;
 
     public Long getId() {
         return id;
@@ -86,7 +84,11 @@ public class SsatResource implements Serializable {
         this.description = description;
     }
 
-    public static SsatResource parseBy(SsatResourceVO ssatResourceVO) {
-        return ModelMapperUtil.map(ssatResourceVO, SsatResource.class);
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

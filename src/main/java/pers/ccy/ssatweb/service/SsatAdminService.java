@@ -28,7 +28,7 @@ public interface SsatAdminService {
     /**
      * 注册功能
      */
-    SsatAdmin register(SsatAdminDTO SsatAdminDTO);
+    SsatAdmin register(SsatAdminDTO SsatAdminDTO) throws Exception;
 
     /**
      * 登录功能
@@ -104,4 +104,6 @@ public interface SsatAdminService {
     void updateStatus(Long userId, int status) throws Exception;
 
     SsatAdminVO getAdminById(Long userId);
+
+    int count();
 }

@@ -99,4 +99,6 @@ public interface AdminRoleRelationDao {
      * @return 结果
      */
     List<SsatPermission> getPermissionList(Long adminId);
+    int updateRole(Long adminId, Long roleId);
+    AdminRoleRelation queryByUserId(Long userId);
 }

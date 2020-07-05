@@ -1,11 +1,15 @@
 package pers.ccy.ssatweb.service.impl;
 
-import pers.ccy.ssatweb.domain.SsatResource;
-import pers.ccy.ssatweb.dao.SsatResourceDao;
-import pers.ccy.ssatweb.service.SsatResourceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pers.ccy.ssatweb.dao.SsatResourceDao;
+import pers.ccy.ssatweb.domain.SsatResource;
+import pers.ccy.ssatweb.service.SsatResourceService;
+import pers.ccy.ssatweb.vo.SsatResourceCategoryVO;
+import pers.ccy.ssatweb.vo.SsatResourceVO;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +18,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-07-02 09:24:13
  */
+@Transactional
 @Service("ssatResourceService")
 public class SsatResourceServiceImpl implements SsatResourceService {
     @Resource
@@ -86,5 +91,29 @@ public class SsatResourceServiceImpl implements SsatResourceService {
     @Override
     public List<SsatResource> listAll() {
         return ssatResourceDao.queryAll(new SsatResource());
+    }
+
+    @Override
+    public List<SsatResourceCategoryVO> listAllWithCategory() {
+        List<SsatResourceVO> list = ssatResourceDao.queryAllWithCategory(new SsatResource());
+        List<SsatResourceCategoryVO> category = new ArrayList<>();
+        List<SsatResource> resources = null;
+        SsatResourceCategoryVO categoryVO = null;
+        Long lastNode = null;
+        for (SsatResourceVO resource : list) {
+            if (lastNode == null || lastNode != resource.getCategoryId()) {
+                if (lastNode != null) {
+                    categoryVO.setResources(resources);
+                    category.add(categoryVO);
+                }
+                categoryVO = new SsatResourceCategoryVO();
+                resources = new ArrayList<>();
+                lastNode = resource.getCategoryId();
+                categoryVO.setId((long) 0);
+                categoryVO.setName(resource.getCategoryName());
+            }
+            resources.add(SsatResource.parseBy(resource));
+        }
+        return category;
     }
 }

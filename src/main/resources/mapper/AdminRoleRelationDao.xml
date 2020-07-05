@@ -142,4 +142,12 @@
             pr.type = 1
             AND pr.admin_id = #{adminId}
     </select>
+
+    <update id="updateRole">
+        update admin_role_relation set role_id = #{roleId} where admin_id = #{adminId}
+    </update>
+
+    <select id="queryByUserId" resultMap="AdminRoleRelationMap">
+        select * from admin_role_relation where admin_id = #{userId}
+    </select>
 </mapper>

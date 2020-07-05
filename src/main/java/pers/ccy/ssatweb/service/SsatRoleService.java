@@ -3,6 +3,8 @@ package pers.ccy.ssatweb.service;
 import pers.ccy.ssatweb.domain.SsatPermission;
 import pers.ccy.ssatweb.domain.SsatResource;
 import pers.ccy.ssatweb.domain.SsatRole;
+import pers.ccy.ssatweb.vo.SsatRoleVO;
+
 import java.util.List;
 
 /**
@@ -59,4 +61,6 @@ public interface SsatRoleService {
     List<SsatRole> list(String keyword, Integer pageSize, Integer pageNum);
     List<SsatResource> listResource(Long roleId);
     int allocResource(Long roleId, List<Long> resourceIds);
+    List<SsatRoleVO> listAll();
+    List<Long> listAllResourceIds(Long roleId);
 }

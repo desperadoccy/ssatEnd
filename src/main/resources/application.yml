@@ -16,7 +16,25 @@ mybatis:
   # 搜索指定包别名
   typeAliasesPackage: pers.ccy.**.**.domain
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
-  mapperLocations: classpath*:mybatis/**/*Mapper.xml
+  mapperLocations: classpath*:mapper/*.xml
   # 加载全局的配置文件
   configLocation: classpath:mybatis/mybatis-config.xml
 
+swagger:
+  base-path: /**
+  base-package: 'pers.ccy'
+  title: ssat-web-swagger
+  description: 'swagger接口文档'
+  version: '1.0'
+
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mySecret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24)
+  tokenHead: Bearer  #JWT负载中拿到开头
+
+secure:
+  ignored:
+    urls:
+      - /admin/login
+      - /admin/register

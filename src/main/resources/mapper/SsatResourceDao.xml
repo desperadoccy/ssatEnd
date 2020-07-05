@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ccy.ssatweb.dao.SsatResourceDao">
+
+    <resultMap type="pers.ccy.ssatweb.domain.SsatResource" id="SsatResourceMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="pers.ccy.ssatweb.vo.SsatResourceVO" id="SsatResourceVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SsatResourceMap">
+        select
+          id, category_id, create_time, name, url, description
+        from SSAT.ssat_resource
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SsatResourceMap">
+        select
+          id, category_id, create_time, name, url, description
+        from SSAT.ssat_resource
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SsatResourceMap">
+        select
+          id, category_id, create_time, name, url, description
+        from SSAT.ssat_resource
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="url != null and url != ''">
+                and url = #{url}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into SSAT.ssat_resource(category_id, create_time, name, url, description)
+        values (#{categoryId}, #{createTime}, #{name}, #{url}, #{description})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update SSAT.ssat_resource
+        <set>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from SSAT.ssat_resource where id = #{id}
+    </delete>
+
+    <select id="selectByRoleId" resultMap="SsatResourceVOMap">
+        select r.*,rc.name category_name from ssat_resource r left join role_resource_relation rrr on rrr.resource_id = r.id left join ssat_resource_category rc on r.category_id = rc.id where rrr.role_id = #{roleId} order by category_id
+    </select>
+
+    <select id="queryAllWithCategory" resultMap="SsatResourceVOMap">
+        select
+          r.*, rc.name category_name
+        from SSAT.ssat_resource r left join ssat_resource_category rc on r.category_id = rc.id
+        order by rc.name
+    </select>
+
+    <select id="listAllResourceIds" resultType="Long">
+        select r.id from ssat_resource r left join role_resource_relation rrr on rrr.resource_id = r.id where rrr.role_id = #{roleId}
+    </select>
+</mapper>

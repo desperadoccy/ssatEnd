@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ccy.ssatweb.dao.SsatPermissionDao">
+
+    <resultMap type="pers.ccy.ssatweb.domain.SsatPermission" id="SsatPermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="uri" column="uri" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="OTHER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SsatPermissionMap">
+        select
+          id, pid, name, value, icon, type, uri, status, create_time
+        from SSAT.ssat_permission
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SsatPermissionMap">
+        select
+          id, pid, name, value, icon, type, uri, status, create_time
+        from SSAT.ssat_permission
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SsatPermissionMap">
+        select
+          id, pid, name, value, icon, type, uri, status, create_time
+        from SSAT.ssat_permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="value != null and value != ''">
+                and value = #{value}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="uri != null and uri != ''">
+                and uri = #{uri}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into SSAT.ssat_permission(pid, name, value, icon, type, uri, status, create_time)
+        values (#{pid}, #{name}, #{value}, #{icon}, #{type}, #{uri}, #{status}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update SSAT.ssat_permission
+        <set>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="value != null and value != ''">
+                value = #{value},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="uri != null and uri != ''">
+                uri = #{uri},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from SSAT.ssat_permission where id = #{id}
+    </delete>
+
+</mapper>

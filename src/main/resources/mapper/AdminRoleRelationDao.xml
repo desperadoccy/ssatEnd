@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ccy.ssatweb.dao.AdminRoleRelationDao">
+
+    <resultMap type="pers.ccy.ssatweb.domain.AdminRoleRelation" id="AdminRoleRelationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="adminId" column="admin_id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap type="pers.ccy.ssatweb.domain.SsatPermission" id="SsatPermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="uri" column="uri" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="OTHER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AdminRoleRelationMap">
+        select
+          id, admin_id, role_id
+        from SSAT.admin_role_relation
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AdminRoleRelationMap">
+        select
+          id, admin_id, role_id
+        from SSAT.admin_role_relation
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="AdminRoleRelationMap">
+        select
+          id, admin_id, role_id
+        from SSAT.admin_role_relation
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="adminId != null">
+                and admin_id = #{adminId}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into SSAT.admin_role_relation(admin_id, role_id)
+        values (#{adminId}, #{roleId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update SSAT.admin_role_relation
+        <set>
+            <if test="adminId != null">
+                admin_id = #{adminId},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from SSAT.admin_role_relation where id = #{id}
+    </delete>
+
+    <delete id="deleteByAdminId">
+        delete from admin_role_relation where admin_id = #{adminId}
+    </delete>
+
+    <select id="getResourceList" resultType="pers.ccy.ssatweb.domain.SsatResource">
+        SELECT
+            sr.id id,
+            sr.create_time createTime,
+            sr.`name` `name`,
+            sr.url url,
+            sr.description description,
+            sr.category_id categoryId
+        FROM
+            admin_role_relation ar
+        LEFT JOIN ssat_role r ON ar.role_id = r.id
+        LEFT JOIN role_resource_relation rrr ON r.id = rrr.role_id
+        LEFT JOIN ssat_resource sr ON sr.id = rrr.resource_id
+        WHERE
+            ar.admin_id = #{adminId}
+        AND sr.id IS NOT NULL
+        GROUP BY
+            sr.id
+    </select>
+
+    <select id="getRolePermissionList" resultMap="SsatPermissionMap">
+        select p.*
+        from admin_role_relation ar left join ssat_role r on ar.role_id = r.id
+            left join role_permission_relation rp on r.id = rp.role_id
+            left join ssat_permission p on rp.permission_id=p.id
+            where ar.admin_id = #{adminId} and p.id is not null
+    </select>
+
+    <select id="getPermissionList" resultMap="SsatPermissionMap">
+        SELECT
+            p.*
+        FROM
+            admin_role_relation ar
+            LEFT JOIN ssat_role r ON ar.role_id = r.id
+            LEFT JOIN role_permission_relation rp ON r.id = rp.role_id
+            LEFT JOIN ssat_permission p ON rp.permission_id = p.id
+        WHERE
+            ar.admin_id = #{adminId}
+            AND p.id IS NOT NULL
+            AND p.id NOT IN (
+                SELECT
+                    p.id
+                FROM
+                    admin_permission_relation pr
+                    LEFT JOIN ssat_permission p ON pr.permission_id = p.id
+                WHERE
+                    pr.type = - 1
+                    AND pr.admin_id = #{adminId}
+            )
+        UNION
+        SELECT
+            p.*
+        FROM
+            admin_permission_relation pr
+            LEFT JOIN ssat_permission p ON pr.permission_id = p.id
+        WHERE
+            pr.type = 1
+            AND pr.admin_id = #{adminId}
+    </select>
+
+    <update id="updateRole">
+        update admin_role_relation set role_id = #{roleId} where admin_id = #{adminId}
+    </update>
+
+    <select id="queryByUserId" resultMap="AdminRoleRelationMap">
+        select * from admin_role_relation where admin_id = #{userId}
+    </select>
+</mapper>

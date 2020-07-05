@@ -2,98 +2,56 @@ package pers.ccy.ssatweb.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import pers.ccy.ssatweb.domain.SsatResource;
+import pers.ccy.ssatweb.security.config.SecurityConfig;
+import pers.ccy.ssatweb.security.service.DynamicSecurityService;
+import pers.ccy.ssatweb.service.SsatAdminService;
+import pers.ccy.ssatweb.service.SsatResourceService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author desperado
  * @ClassName WebSecurityConfig
  * @Description
- * @date 2020/5/2 20:37
+ * @date 2020/7/2 16:34
  * @Version 1.0
  */
+@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends SecurityConfig {
 
     @Autowired
-    AjaxAuthenticationEntryPoint authenticationEntryPoint;  //  未登陆时返回 JSON 格式的数据给前端
-
+    private SsatAdminService adminService;
     @Autowired
-    AjaxAuthenticationSuccessHandler authenticationSuccessHandler;  // 登录成功返回的 JSON 格式数据给前端
+    private SsatResourceService resourceService;
 
-    @Autowired
-    AjaxAuthenticationFailureHandler authenticationFailureHandler;  //  登录失败返回的 JSON 格式数据给前端
-
-    @Autowired
-    AjaxLogoutSuccessHandler logoutSuccessHandler;  // 注销成功返回的 JSON 格式数据给前端
-
-    @Autowired
-    AjaxAccessDeniedHandler accessDeniedHandler;    // 无权访问返回的 JSON 格式数据给前端
-
-    @Autowired
-    SelfUserDetailsService userDetailsService; // 自定义user
-
-    @Autowired
-    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
-
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // 加入自定义的安全认证
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭session
-                .and()
-                //  未登陆时返回 JSON
-                .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                // 所有请求必须认证
-                .authorizeRequests()
-                .anyRequest()
-                // 认证的逻辑
-                .access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
-                .and()
-                //开启登录
-                .formLogin()
-                .loginPage("/")
-                .successHandler(authenticationSuccessHandler) // 登录成功
-                .failureHandler(authenticationFailureHandler) // 登录失败
-                .permitAll()
-                .and()
-                // 登出
-                .logout()
-                .logoutSuccessHandler(logoutSuccessHandler)
-                .permitAll();
-        http.rememberMe().rememberMeParameter("remember-me")
-                .userDetailsService(userDetailsService).tokenValiditySeconds(300);
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler); // 无权访问 JSON 格式的数据
-        //用重写的Filter替换掉原有的UsernamePasswordAuthenticationFilter实现使用json 数据也可以登陆
-        http.addFilterAt(customAuthenticationFilter(),
-                UsernamePasswordAuthenticationFilter.class);
-        // 设置执行其他工作前的 filter （最重要的验证 JWT）
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT Filter
-
-    }
-
-    //注册自定义的UsernamePasswordAuthenticationFilter
     @Bean
-    CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
-        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        filter.setFilterProcessesUrl("/login"); // 设置登陆接口名
-        filter.setAuthenticationManager(authenticationManagerBean());
-        return filter;
+    public UserDetailsService userDetailsService() {
+        //获取登录用户信息
+        return username -> adminService.loadUserByUsername(username);
+    }
+
+    @Bean
+    public DynamicSecurityService dynamicSecurityService() {
+        return new DynamicSecurityService() {
+            @Override
+            public Map<String, ConfigAttribute> loadDataSource() {
+                Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
+                List<SsatResource> resourceList = resourceService.listAll();
+                for (SsatResource resource : resourceList) {
+                    map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
+                }
+                return map;
+            }
+        };
     }
 }

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ccy.ssatweb.dao.SsatRoleDao">
+
+    <resultMap type="pers.ccy.ssatweb.domain.SsatRole" id="SsatRoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="adminCount" column="admin_count" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SsatRoleMap">
+        select
+          id, name, description, admin_count, create_time, status, sort
+        from SSAT.ssat_role
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SsatRoleMap">
+        select
+          id, name, description, admin_count, create_time, status, sort
+        from SSAT.ssat_role
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SsatRoleMap">
+        select
+          id, name, description, admin_count, create_time, status, sort
+        from SSAT.ssat_role
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="adminCount != null">
+                and admin_count = #{adminCount}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into SSAT.ssat_role(name, description, admin_count, create_time, status, sort)
+        values (#{name}, #{description}, #{adminCount}, #{createTime}, #{status}, #{sort})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update SSAT.ssat_role
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="adminCount != null">
+                admin_count = #{adminCount},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from SSAT.ssat_role where id = #{id}
+    </delete>
+
+    <select id="queryByAdminId" resultMap="SsatRoleMap">
+        select r.*
+        from admin_role_relation ar left join ssat_role r on ar.role_id = r.id
+        where ar.admin_id = #{adminId}
+    </select>
+
+    <select id="queryByName" resultMap="SsatRoleMap">
+        select * from ssat_role where name like #{keyword}
+    </select>
+
+    <select id="getResourceListByRoleId" resultType="pers.ccy.ssatweb.domain.SsatResource">
+        SELECT
+            r.id id,
+            r.create_time createTime,
+            r.`name` `name`,
+            r.url url,
+            r.description description,
+            r.category_id categoryId
+        FROM
+            role_resource_relation rrr
+                LEFT JOIN ssat_resource r ON rrr.resource_id = r.id
+        WHERE
+            rrr.role_id = #{roleId}
+          AND r.id IS NOT NULL
+        GROUP BY
+            r.id
+    </select>
+    <select id="count" resultType="int">
+        select count(*) from ssat_admin
+    </select>
+
+    <update id="addCount">
+        update ssat_role set admin_count = `admin_count` + 1 where id = #{roleId}
+    </update>
+
+    <update id="subCount">
+        update ssat_role set admin_count = `admin_count` - 1 where id = #{roleId}
+    </update>
+</mapper>

@@ -23,7 +23,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class SsatAdminController {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;

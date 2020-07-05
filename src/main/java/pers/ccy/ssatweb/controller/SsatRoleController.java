@@ -21,7 +21,7 @@ import java.util.List;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/api/role")
 public class SsatRoleController {
     @Autowired
     SsatRoleService ssatRoleService;

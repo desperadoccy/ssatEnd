@@ -16,7 +16,7 @@ import pers.ccy.ssatweb.service.MenuService;
  */
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/api/menu")
 public class MenuController {
     @Autowired
     private MenuService menuService;

@@ -36,8 +36,8 @@ jwt:
 secure:
   ignored:
     urls:
-      - /admin/login
-      - /admin/register
+      - /api/admin/login
+      - /api/admin/register
       - /menu/all
       - /swagger-ui.html
       - /swagger-resources/**

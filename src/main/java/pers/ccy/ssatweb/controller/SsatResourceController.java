@@ -21,7 +21,7 @@ import java.util.List;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/resource")
+@RequestMapping("/api/resource")
 public class SsatResourceController {
     @Autowired
     private SsatResourceService ssatResourceService;

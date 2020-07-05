@@ -11,7 +11,7 @@ import pers.ccy.ssatweb.service.ArticleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/api/article")
 public class ArticleController {
 
     @Autowired

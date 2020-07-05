@@ -39,3 +39,12 @@ secure:
       - /admin/login
       - /admin/register
       - /menu/all
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**

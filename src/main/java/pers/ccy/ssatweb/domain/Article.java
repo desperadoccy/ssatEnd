@@ -11,18 +11,19 @@ import java.util.Date;
  * @Version 1.0
  */
 public class Article implements Serializable {
-    private Integer id;
+    private Long id;
     private String title;
     private String introduction;
     private String url;
     private Date date;
     private String author;
+    private String content;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -66,15 +67,11 @@ public class Article implements Serializable {
         this.author = author;
     }
 
-    @Override
-    public String toString() {
-        return "Article{" +
-                "id=" + id +
-                ", titile='" + title + '\'' +
-                ", introduction='" + introduction + '\'' +
-                ", url='" + url + '\'' +
-                ", date=" + date +
-                ", author='" + author + '\'' +
-                '}';
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

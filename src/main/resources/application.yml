@@ -38,7 +38,7 @@ secure:
     urls:
       - /api/admin/login
       - /api/admin/register
-      - /menu/all
+      - /api/menu/all
       - /swagger-ui.html
       - /swagger-resources/**
       - /swagger/**

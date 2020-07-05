@@ -1,16 +1,14 @@
 package pers.ccy.ssatweb.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.SsatResource;
 import pers.ccy.ssatweb.service.RoleResourceRelationService;
 import pers.ccy.ssatweb.service.SsatResourceService;
 import pers.ccy.ssatweb.vo.SsatResourceCategoryVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,6 +65,17 @@ public class SsatResourceController {
             return RespBean.ok("删除成功");
         } catch (Exception e) {
             return RespBean.error("删除失败");
+        }
+    }
+
+    @PostMapping("/add")
+    public RespBean add(SsatResource resource) {
+        try {
+            resource.setCreateTime(new Date());
+            ssatResourceService.insert(resource);
+            return RespBean.ok("添加成功");
+        } catch (Exception e){
+            return RespBean.error("添加失败");
         }
     }
 }

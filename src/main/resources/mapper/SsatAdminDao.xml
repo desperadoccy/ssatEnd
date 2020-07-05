@@ -129,7 +129,7 @@
         select
           id, username, password, icon, email, nick_name, note, create_time, login_time, status
         from SSAT.ssat_admin
-        where username = #{username}
+        where username = #{username} and status = 1
     </select>
 
     <update id="updateStatus">

@@ -1,50 +1,55 @@
 package pers.ccy.ssatweb.service;
 
-import pers.ccy.ssatweb.common.RespBean;
 import pers.ccy.ssatweb.domain.Article;
-
 import java.util.List;
 
 /**
- * @author desperado
- * @ClassName ArticleService
- * @Description
- * @date 2020/4/27 22:29
- * @Version 1.0
+ * (Article)表服务接口
+ *
+ * @author makejava
+ * @since 2020-07-06 04:04:42
  */
 public interface ArticleService {
-    /**
-     * @param [article]
-     * @MethodName createArticle
-     * @Description
-     */
-    RespBean createArticle(Article article);
 
     /**
-     * @param [article]
-     * @MethodName updateArticle
-     * @Description
+     * 通过ID查询单条数据
+     *
+     * @param id 主键
+     * @return 实例对象
      */
-    RespBean updateArticle(Article article);
+    Article queryById(Long id);
 
     /**
-     * @param [name]
-     * @MethodName findArticleByName
-     * @Description
+     * 查询多条数据
+     *
+     * @param offset 查询起始位置
+     * @param limit 查询条数
+     * @return 对象列表
      */
-    Article findArticleByTitle(String title);
+    List<Article> queryAllByLimit(int offset, int limit);
 
     /**
-     * @param []
-     * @MethodName findAll
-     * @Description
+     * 新增数据
+     *
+     * @param article 实例对象
+     * @return 实例对象
      */
-    List<Article> findAll();
+    Article insert(Article article);
 
     /**
-     * @param [size, page]
-     * @MethodName findArticleByPage
-     * @Description
+     * 修改数据
+     *
+     * @param article 实例对象
+     * @return 实例对象
      */
-    List<Article> findArticleByPage(int size, int page);
+    Article update(Article article);
+
+    /**
+     * 通过主键删除数据
+     *
+     * @param id 主键
+     * @return 是否成功
+     */
+    boolean deleteById(Long id);
+    List<Article> queryAll();
 }

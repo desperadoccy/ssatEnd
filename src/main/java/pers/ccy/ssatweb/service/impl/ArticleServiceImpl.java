@@ -1,92 +1,84 @@
 package pers.ccy.ssatweb.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import pers.ccy.ssatweb.common.RespBean;
-import pers.ccy.ssatweb.dao.ArticleDao;
 import pers.ccy.ssatweb.domain.Article;
+import pers.ccy.ssatweb.dao.ArticleDao;
 import pers.ccy.ssatweb.service.ArticleService;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author desperado
- * @ClassName ArticleServiceImpl
- * @Description
- * @date 2020/4/27 22:29
- * @Version 1.0
+ * (Article)表服务实现类
+ *
+ * @author makejava
+ * @since 2020-07-06 04:04:42
  */
-@Transactional
-@Service
+@Service("articleService")
 public class ArticleServiceImpl implements ArticleService {
-
-    @Autowired
+    @Resource
     private ArticleDao articleDao;
 
     /**
-     * @param [article]
-     * @MethodName createArticle
-     * @Description
+     * 通过ID查询单条数据
+     *
+     * @param id 主键
+     * @return 实例对象
      */
     @Override
-    public RespBean createArticle(Article article) {
-        Article article1 = articleDao.findArticleByTitle(article.getTitle());
-        RespBean respBean;
-        if (article1 == null) {
-            articleDao.createArticle(article);
-            respBean = RespBean.ok("创建成功");
-        } else {
-            respBean = RespBean.error("文章标题重名");
-        }
-        return respBean;
+    public Article queryById(Long id) {
+        return this.articleDao.queryById(id);
     }
 
     /**
-     * @param [article]
-     * @MethodName updateArticle
-     * @Description
+     * 查询多条数据
+     *
+     * @param offset 查询起始位置
+     * @param limit 查询条数
+     * @return 对象列表
      */
     @Override
-    public RespBean updateArticle(Article article) {
-        Article article1 = articleDao.findArticleByTitle(article.getTitle());
-        RespBean respBean;
-        if (article1 == null || article1.getTitle().equals(article.getTitle())) {
-            articleDao.updateArticle(article);
-            respBean = RespBean.ok("更新成功");
-        } else {
-            respBean = RespBean.error("文章标题重名");
-        }
-        return respBean;
+    public List<Article> queryAllByLimit(int offset, int limit) {
+        return this.articleDao.queryAllByLimit(offset, limit);
     }
 
     /**
-     * @param [name]
-     * @MethodName findArticleByName
-     * @Description
+     * 新增数据
+     *
+     * @param article 实例对象
+     * @return 实例对象
      */
     @Override
-    public Article findArticleByTitle(String title) {
-        return articleDao.findArticleByTitle(title);
+    public Article insert(Article article) {
+        this.articleDao.insert(article);
+        return article;
     }
 
     /**
-     * @param []
-     * @MethodName findAll
-     * @Description
+     * 修改数据
+     *
+     * @param article 实例对象
+     * @return 实例对象
      */
     @Override
-    public List<Article> findAll() {
-        return articleDao.findAll();
+    public Article update(Article article) {
+        this.articleDao.update(article);
+        return this.queryById(article.getId());
     }
 
     /**
-     * @param [size, page]
-     * @MethodName findArticleByPage
-     * @Description
+     * 通过主键删除数据
+     *
+     * @param id 主键
+     * @return 是否成功
      */
     @Override
-    public List<Article> findArticleByPage(int size, int page) {
-        return articleDao.findArticleByPage((page - 1) * size, size);
+    public boolean deleteById(Long id) {
+        return this.articleDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<Article> queryAll() {
+        return articleDao.queryAll(new Article());
     }
 }
